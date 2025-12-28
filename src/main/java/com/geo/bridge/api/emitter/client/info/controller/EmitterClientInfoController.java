@@ -38,7 +38,7 @@ public class EmitterClientInfoController {
 
     /**
      * Emitter Client Infomation 생성 (DB)
-     * @param rq
+     * @param rq Emitter Client 생성 객체
      * @return
      */
     @PostMapping
@@ -48,13 +48,13 @@ public class EmitterClientInfoController {
 
     /**
      * Emitter Client 정보 리스트 조회 (페이징)
-     * @param rq
-     * @param page
+     * @param rq 검색 객체
+     * @param page 페이지네이션
      * @return
      */
     @GetMapping("/plist")
     public Mono<BasePageRS<SearchEmitterClientInfoRS>> getAllEmitterClientInfo(@Valid SearchEmitterClientInfoRQ rq, BasePageRQ page){
-        return null;
+        return emitterClientInfoService.getAllEmitterClientInfo(rq, page);
     }
 
 }

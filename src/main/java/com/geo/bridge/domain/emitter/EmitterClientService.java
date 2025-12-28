@@ -1,9 +1,12 @@
 package com.geo.bridge.domain.emitter;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.geo.bridge.domain.emitter.dto.EmitterClientDTO;
+import com.geo.bridge.domain.emitter.dto.SearchEmitterDTO;
+import com.geo.bridge.domain.emitter.dto.entity.EmitterClientDTO;
 import com.geo.bridge.domain.emitter.repository.EmitterClientRepository;
+import com.geo.bridge.global.base.BasePageRS;
 import com.geo.bridge.global.utils.JsonUtil;
 
 import lombok.RequiredArgsConstructor;
@@ -15,6 +18,7 @@ import reactor.core.publisher.Mono;
  * <p>기능</p>
  * <ul>
  *     <li>{@link #createClient()} 클라이언트 생성</li>
+ *     <li>{@link #getAllEmitterClient(SearchEmitterDTO, Pageable)} 클라이언트 리스트 조회</li>
  * </ul>
  */
 @Service
@@ -27,7 +31,7 @@ public class EmitterClientService {
 
     /**
      * DB Client Infomation Save
-     * @param mono
+     * @param mono 생성객체
      * @return
      */
     public Mono<Void> createClient(Mono<EmitterClientDTO> mono){
@@ -35,6 +39,16 @@ public class EmitterClientService {
             .doOnNext(rq -> log.info(JsonUtil.toJson(rq)))
             .flatMap(emitterClientRepository::save)
             .then();
+    }
+
+    /**
+     * DB Client Infomation Search
+     * @param searchDTO 검색객체
+     * @param pageable 페이지네이션
+     * @return
+     */
+    public Mono<BasePageRS<EmitterClientDTO>> getAllEmitterClient(SearchEmitterDTO searchDTO, Pageable pageable){
+        return emitterClientRepository.findBySearch(searchDTO, pageable);
     }
     
 }

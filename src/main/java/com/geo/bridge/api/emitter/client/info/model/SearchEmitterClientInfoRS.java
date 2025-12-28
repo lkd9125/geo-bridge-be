@@ -2,6 +2,7 @@ package com.geo.bridge.api.emitter.client.info.model;
 
 import java.time.LocalDateTime;
 
+import com.geo.bridge.domain.emitter.dto.entity.EmitterClientDTO;
 import com.geo.bridge.domain.emitter.integration.model.EmitterType;
 
 import lombok.Data;
@@ -21,6 +22,11 @@ import lombok.Data;
  *     <li>{@link #updateDt} : 수정 일자</li>
  *     <li>{@link #createAt} : 생성자</li>
  *     <li>{@link #updateAt} : 수정자</li>
+ * </ul>
+ * 
+ * <p>기능</p>
+ *  * <ul>
+ *     <li>{@link #fromDTO(EmitterClientDTO)} : DTO를 SearchEmitterClientInfoRS로 변환</li>
  * </ul>
  */
 @Data
@@ -47,5 +53,27 @@ public class SearchEmitterClientInfoRS {
     private LocalDateTime updateDt;
 
     private String updateAt;
+
+    /**
+     * DTO를 SearchEmitterClientInfoRS로 변환
+     * @param dto DB Emitter Client Table DTO
+     * @return
+     */
+    public static SearchEmitterClientInfoRS fromDTO(EmitterClientDTO dto){
+        SearchEmitterClientInfoRS rs = new SearchEmitterClientInfoRS();
+        rs.setIdx(dto.getIdx());
+        rs.setName(dto.getName());
+        rs.setHost(dto.getHost());
+        rs.setType(dto.getType());
+        rs.setTopic(dto.getTopic());
+        rs.setHostId(dto.getHostId());
+        rs.setPassword(dto.getPassword());
+        rs.setCreateDt(dto.getCreateDt());
+        rs.setCreateAt(dto.getCreateAt());
+        rs.setUpdateDt(dto.getUpdateDt());
+        rs.setUpdateAt(dto.getUpdateAt());
+
+        return rs;
+    }
 
 }

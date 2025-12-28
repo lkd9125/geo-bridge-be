@@ -1,5 +1,7 @@
 package com.geo.bridge.api.emitter.client.info.model;
 
+import com.geo.bridge.domain.emitter.dto.SearchEmitterDTO;
+
 import lombok.Data;
 
 /**
@@ -18,5 +20,12 @@ import lombok.Data;
 @Data
 public class SearchEmitterClientInfoRQ {
 
+    private Long idx;
+
+    public SearchEmitterDTO toDto(){ 
+        return SearchEmitterDTO.builder()
+            .idx(idx)
+            .build();
+    }
 
 }
