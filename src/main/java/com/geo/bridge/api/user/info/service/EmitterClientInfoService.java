@@ -1,15 +1,15 @@
-package com.geo.bridge.api.emitter.client.info.service;
+package com.geo.bridge.api.user.info.service;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.geo.bridge.api.emitter.client.info.model.CreateEmitterClientInfoRQ;
-import com.geo.bridge.api.emitter.client.info.model.SearchEmitterClientInfoRQ;
-import com.geo.bridge.api.emitter.client.info.model.SearchEmitterClientInfoRS;
-import com.geo.bridge.domain.emitter.EmitterClientService;
-import com.geo.bridge.domain.emitter.dto.SearchEmitterDTO;
+import com.geo.bridge.api.user.info.model.CreateEmitterClientInfoRQ;
+import com.geo.bridge.api.user.info.model.SearchEmitterClientInfoRQ;
+import com.geo.bridge.api.user.info.model.SearchEmitterClientInfoRS;
+import com.geo.bridge.domain.user.host.EmitterClientService;
+import com.geo.bridge.domain.user.host.dto.SearchEmitterDTO;
 import com.geo.bridge.global.base.BasePageRQ;
 import com.geo.bridge.global.base.BasePageRS;
 
@@ -62,7 +62,7 @@ public class EmitterClientInfoService {
     public Mono<BasePageRS<SearchEmitterClientInfoRS>> getAllEmitterClientInfo(SearchEmitterClientInfoRQ rq, BasePageRQ page){
         SearchEmitterDTO searchDTO = rq.toDto();
         Pageable pageable = PageRequest.of(page.getPage() - 1, page.getSize());
-        
+
         return emitterClientService.getAllEmitterClient(searchDTO, pageable)
             .flatMap(pageRS ->
                  Flux.fromIterable(pageRS.getList())

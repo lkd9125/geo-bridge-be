@@ -1,4 +1,4 @@
-package com.geo.bridge.domain.emitter.dto;
+package com.geo.bridge.domain.user.host.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

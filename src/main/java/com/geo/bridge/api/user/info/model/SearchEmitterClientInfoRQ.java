@@ -1,6 +1,7 @@
-package com.geo.bridge.api.emitter.client.info.model;
+package com.geo.bridge.api.user.info.model;
 
-import com.geo.bridge.domain.emitter.dto.SearchEmitterDTO;
+
+import com.geo.bridge.domain.user.host.dto.SearchEmitterDTO;
 
 import lombok.Data;
 

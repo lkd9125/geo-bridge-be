@@ -1,11 +1,11 @@
-package com.geo.bridge.domain.emitter;
+package com.geo.bridge.domain.user.host;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.geo.bridge.domain.emitter.dto.SearchEmitterDTO;
-import com.geo.bridge.domain.emitter.dto.entity.EmitterClientDTO;
-import com.geo.bridge.domain.emitter.repository.EmitterClientRepository;
+import com.geo.bridge.domain.user.host.dto.SearchEmitterDTO;
+import com.geo.bridge.domain.user.host.dto.entity.EmitterClientDTO;
+import com.geo.bridge.domain.user.host.repository.EmitterClientRepository;
 import com.geo.bridge.global.base.BasePageRS;
 import com.geo.bridge.global.utils.JsonUtil;
 

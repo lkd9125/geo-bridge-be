@@ -1,8 +1,8 @@
-package com.geo.bridge.domain.emitter.repository;
+package com.geo.bridge.domain.user.host.repository;
 
 import org.springframework.data.r2dbc.repository.R2dbcRepository;
 
-import com.geo.bridge.domain.emitter.dto.entity.EmitterClientDTO;
+import com.geo.bridge.domain.user.host.dto.entity.EmitterClientDTO;
 
 /**
  * EmitterClient 테이블 DB 조작 Repopsitory

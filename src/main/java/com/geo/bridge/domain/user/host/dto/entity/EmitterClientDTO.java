@@ -1,4 +1,4 @@
-package com.geo.bridge.domain.emitter.dto.entity;
+package com.geo.bridge.domain.user.host.dto.entity;
 
 import java.time.LocalDateTime;
 

@@ -1,4 +1,4 @@
-package com.geo.bridge.api.emitter.client.info.controller;
+package com.geo.bridge.api.user.info.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -6,10 +6,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.geo.bridge.api.emitter.client.info.model.CreateEmitterClientInfoRQ;
-import com.geo.bridge.api.emitter.client.info.model.SearchEmitterClientInfoRQ;
-import com.geo.bridge.api.emitter.client.info.model.SearchEmitterClientInfoRS;
-import com.geo.bridge.api.emitter.client.info.service.EmitterClientInfoService;
+import com.geo.bridge.api.user.info.model.CreateEmitterClientInfoRQ;
+import com.geo.bridge.api.user.info.model.SearchEmitterClientInfoRQ;
+import com.geo.bridge.api.user.info.model.SearchEmitterClientInfoRS;
+import com.geo.bridge.api.user.info.service.EmitterClientInfoService;
 import com.geo.bridge.global.base.BasePageRQ;
 import com.geo.bridge.global.base.BasePageRS;
 

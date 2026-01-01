@@ -1,9 +1,9 @@
-package com.geo.bridge.api.emitter.client.info.model;
+package com.geo.bridge.api.user.info.model;
 
 import java.time.LocalDateTime;
 
-import com.geo.bridge.domain.emitter.dto.entity.EmitterClientDTO;
 import com.geo.bridge.domain.emitter.integration.model.EmitterType;
+import com.geo.bridge.domain.user.host.dto.entity.EmitterClientDTO;
 import com.geo.bridge.global.security.SecurityHelper;
 
 import jakarta.validation.constraints.NotNull;
