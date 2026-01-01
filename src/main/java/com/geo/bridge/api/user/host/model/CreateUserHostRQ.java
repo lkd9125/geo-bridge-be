@@ -1,4 +1,4 @@
-package com.geo.bridge.api.user.info.model;
+package com.geo.bridge.api.user.host.model;
 
 import java.time.LocalDateTime;
 
@@ -23,7 +23,7 @@ import lombok.Data;
  * </ul>
  */
 @Data
-public class CreateEmitterClientInfoRQ {
+public class CreateUserHostRQ {
 
     @NotNull
     private EmitterType type;

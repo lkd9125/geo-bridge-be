@@ -1,4 +1,4 @@
-package com.geo.bridge.api.user.info.model;
+package com.geo.bridge.api.user.host.model;
 
 import java.time.LocalDateTime;
 
@@ -30,7 +30,7 @@ import lombok.Data;
  * </ul>
  */
 @Data
-public class SearchEmitterClientInfoRS {
+public class SearchUserHostRS {
 
     private Long idx;
 
@@ -59,8 +59,8 @@ public class SearchEmitterClientInfoRS {
      * @param dto DB Emitter Client Table DTO
      * @return
      */
-    public static SearchEmitterClientInfoRS fromDTO(EmitterClientDTO dto){
-        SearchEmitterClientInfoRS rs = new SearchEmitterClientInfoRS();
+    public static SearchUserHostRS fromDTO(EmitterClientDTO dto){
+        SearchUserHostRS rs = new SearchUserHostRS();
         rs.setIdx(dto.getIdx());
         rs.setName(dto.getName());
         rs.setHost(dto.getHost());

@@ -1,13 +1,13 @@
-package com.geo.bridge.api.user.info.service;
+package com.geo.bridge.api.user.host.service;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.geo.bridge.api.user.info.model.CreateEmitterClientInfoRQ;
-import com.geo.bridge.api.user.info.model.SearchEmitterClientInfoRQ;
-import com.geo.bridge.api.user.info.model.SearchEmitterClientInfoRS;
+import com.geo.bridge.api.user.host.model.CreateUserHostRQ;
+import com.geo.bridge.api.user.host.model.SearchUserHostRQ;
+import com.geo.bridge.api.user.host.model.SearchUserHostRS;
 import com.geo.bridge.domain.user.host.EmitterClientService;
 import com.geo.bridge.domain.user.host.dto.SearchEmitterDTO;
 import com.geo.bridge.global.base.BasePageRQ;
@@ -25,13 +25,13 @@ import reactor.core.publisher.Mono;
  * <p>기능</p>
  * <ul>
  *     <li>{@link #createEmitterClientInfo(Mono)} 클라이언트 정보 생성</li>
- *     <li>{@link #getAllEmitterClientInfo(SearchEmitterClientInfoRQ, BasePageRQ)} 클라이언트 정보 생성</li>
+ *     <li>{@link #getAllEmitterClientInfo(SearchUserHostRQ, BasePageRQ)} 클라이언트 정보 생성</li>
  * </ul>
  */
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class EmitterClientInfoService {
+public class UserHostService {
 
     private final EmitterClientService emitterClientService;
 
@@ -43,9 +43,9 @@ public class EmitterClientInfoService {
      * @return
      */
     @Transactional
-    public Mono<Void> createEmitterClientInfo(Mono<CreateEmitterClientInfoRQ> mono){
+    public Mono<Void> createEmitterClientInfo(Mono<CreateUserHostRQ> mono){
         return mono
-            .map(CreateEmitterClientInfoRQ::toDto)
+            .map(CreateUserHostRQ::toDto)
             .flatMap(dto -> emitterClientService.createClient(Mono.just(dto)))
             .then();
     }
@@ -59,14 +59,14 @@ public class EmitterClientInfoService {
      * @param page 페이지네이션
      * @return
      */
-    public Mono<BasePageRS<SearchEmitterClientInfoRS>> getAllEmitterClientInfo(SearchEmitterClientInfoRQ rq, BasePageRQ page){
+    public Mono<BasePageRS<SearchUserHostRS>> getAllEmitterClientInfo(SearchUserHostRQ rq, BasePageRQ page){
         SearchEmitterDTO searchDTO = rq.toDto();
         Pageable pageable = PageRequest.of(page.getPage() - 1, page.getSize());
 
         return emitterClientService.getAllEmitterClient(searchDTO, pageable)
             .flatMap(pageRS ->
                  Flux.fromIterable(pageRS.getList())
-                    .map(SearchEmitterClientInfoRS::fromDTO)
+                    .map(SearchUserHostRS::fromDTO)
                     .collectList()
                     .map(newList -> 
                         BasePageRS.of(

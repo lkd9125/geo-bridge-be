@@ -1,4 +1,4 @@
-package com.geo.bridge.api.user.info.model;
+package com.geo.bridge.api.user.host.model;
 
 
 import com.geo.bridge.domain.user.host.dto.SearchEmitterDTO;
@@ -19,7 +19,7 @@ import lombok.Data;
  * </ul>
  */
 @Data
-public class SearchEmitterClientInfoRQ {
+public class SearchUserHostRQ {
 
     private Long idx;
 

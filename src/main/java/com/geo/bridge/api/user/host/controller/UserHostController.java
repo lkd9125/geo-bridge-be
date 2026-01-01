@@ -1,4 +1,4 @@
-package com.geo.bridge.api.user.info.controller;
+package com.geo.bridge.api.user.host.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -6,10 +6,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.geo.bridge.api.user.info.model.CreateEmitterClientInfoRQ;
-import com.geo.bridge.api.user.info.model.SearchEmitterClientInfoRQ;
-import com.geo.bridge.api.user.info.model.SearchEmitterClientInfoRS;
-import com.geo.bridge.api.user.info.service.EmitterClientInfoService;
+import com.geo.bridge.api.user.host.model.CreateUserHostRQ;
+import com.geo.bridge.api.user.host.model.SearchUserHostRQ;
+import com.geo.bridge.api.user.host.model.SearchUserHostRS;
+import com.geo.bridge.api.user.host.service.UserHostService;
 import com.geo.bridge.global.base.BasePageRQ;
 import com.geo.bridge.global.base.BasePageRS;
 
@@ -25,16 +25,16 @@ import reactor.core.publisher.Mono;
  * <p>기능</p>
  * <ul>
  *     <li>{@link #createEmitterClientInfo(Mono)} 클라이언트 정보 생성</li>
- *     <li>{@link #getAllEmitterClientInfo(SearchEmitterClientInfoRQ, BasePageRQ)} 클라이언트 정보 생성</li>
+ *     <li>{@link #getAllEmitterClientInfo(SearchUserHostRQ, BasePageRQ)} 클라이언트 정보 생성</li>
  * </ul>
  */
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/emitter/client/info")
-public class EmitterClientInfoController {
+@RequestMapping("/api/v1/user/host")
+public class UserHostController {
 
-    private final EmitterClientInfoService emitterClientInfoService;
+    private final UserHostService emitterClientInfoService;
 
     /**
      * Emitter Client Infomation 생성 (DB)
@@ -42,7 +42,7 @@ public class EmitterClientInfoController {
      * @return
      */
     @PostMapping
-    public Mono<Void> createEmitterClientInfo(@Valid @RequestBody Mono<CreateEmitterClientInfoRQ> rq){
+    public Mono<Void> createEmitterClientInfo(@Valid @RequestBody Mono<CreateUserHostRQ> rq){
         return emitterClientInfoService.createEmitterClientInfo(rq);
     }
 
@@ -53,7 +53,7 @@ public class EmitterClientInfoController {
      * @return
      */
     @GetMapping("/plist")
-    public Mono<BasePageRS<SearchEmitterClientInfoRS>> getAllEmitterClientInfo(@Valid SearchEmitterClientInfoRQ rq, BasePageRQ page){
+    public Mono<BasePageRS<SearchUserHostRS>> getAllEmitterClientInfo(@Valid SearchUserHostRQ rq, BasePageRQ page){
         return emitterClientInfoService.getAllEmitterClientInfo(rq, page);
     }
 
