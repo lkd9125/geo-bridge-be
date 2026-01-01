@@ -1,4 +1,4 @@
-package com.geo.bridge.domain.emitter.integration;
+package com.geo.bridge.domain.emitter.integration.client;
 
 import java.util.Arrays;
 import java.util.UUID;
@@ -74,6 +74,7 @@ public class MqttEmitterClient implements EmitterClient{
             this.mqttClient = manager.getClient();
             this.mqttClient.connect();
             log.info("Try '{}' TCP Connect {} : {}", name, clientId, this.host);
+            this.isConnected = true;
         } catch (MqttException e){
             log.error("THIS {} CONNECTED ERROR :: {}", this.name, e.getMessage());
         } catch (Exception e){

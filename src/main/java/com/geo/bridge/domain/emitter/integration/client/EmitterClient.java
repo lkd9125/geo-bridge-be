@@ -1,4 +1,4 @@
-package com.geo.bridge.domain.emitter.integration;
+package com.geo.bridge.domain.emitter.integration.client;
 
 import org.locationtech.jts.geom.Coordinate;
 

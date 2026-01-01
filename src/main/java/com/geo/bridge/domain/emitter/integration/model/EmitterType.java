@@ -49,6 +49,6 @@ public enum EmitterType {
      * </p>
      */
     WS,
-    ;
+    ;    
 
 }

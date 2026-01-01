@@ -1,22 +1,29 @@
 package com.geo.bridge.domain.emitter;
 
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
-import java.awt.geom.Point2D;
 
 import org.geotools.referencing.GeodeticCalculator;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.locationtech.jts.geom.Coordinate;
 import org.springframework.stereotype.Service;
 
+import com.geo.bridge.domain.emitter.integration.EmitterIntegrationService;
+import com.geo.bridge.domain.emitter.integration.client.EmitterClient;
+import com.geo.bridge.domain.emitter.model.CreateSimulatorClientDTO;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import reactor.core.publisher.Mono;
 
 /**
- * 위치 데이터 계산 서비스
+ * 데이터 시뮬레이션 서비스
+ * 
  * <p>기능</p>
  * <ul>
- *     <li>{@link #createSimulatorCoordinates(List, Double, int)} 위치 데이터 발생</li>
+ *     <li>{@link #createSimulatorCoordinates(List, Double, int)} 위치 데이터 계산 후 발행</li>
+ *     <li>{@link #createSimulatorClient(CreateSimulatorClientDTO)} 시뮬레이션 클라이언트 생성</li>
  * </ul>
  */
 @Service
@@ -24,6 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class EmitterSimulatorService {
 
+    private final EmitterIntegrationService emitterIntegrationService;
     private final GeodeticCalculator calc = new GeodeticCalculator(DefaultGeographicCRS.WGS84); 
 
     /**
@@ -33,7 +41,7 @@ public class EmitterSimulatorService {
      * @param cycle 반복 주기
      * @return
      */
-    public List<Coordinate> createSimulatorCoordinates(List<Coordinate> routeCoordinates, Double speed, int cycle){
+    public Mono<List<Coordinate>> createSimulatorCoordinates(List<Coordinate> routeCoordinates, Double speed, int cycle){
         // 최소 한번은 반복
         if(cycle < 1){
             cycle = 1;
@@ -50,7 +58,7 @@ public class EmitterSimulatorService {
         List<Coordinate> timeStepCoordinates = new ArrayList<>();
         
         if (routeCoordinates == null || routeCoordinates.size() < 2) {
-            return timeStepCoordinates;
+            return Mono.just(timeStepCoordinates);
         }
 
         // 시작점 추가 (0초 지점)
@@ -102,14 +110,23 @@ public class EmitterSimulatorService {
             }
         }
 
+        // 반복주기만큼 좌표 갯수추가
         List<Coordinate> result = new ArrayList<>();
         for(int i = 0; i < cycle; i++){
             result.addAll(timeStepCoordinates);
         }
         
 
-        return result;
+        return Mono.just(result);
     }
 
+    /**
+     * 시뮬레이션 클라이언트 생성
+     * @param dto 클라이언트 생성용 DTO
+     * @return 생성 식별 번호
+     */
+    public Mono<EmitterClient> createSimulatorClient(CreateSimulatorClientDTO dto){
+        return emitterIntegrationService.createIntegrationEmitterClient(dto.getName(), dto.getHost(), dto.getTopic(), dto.getUsername(), dto.getPassword(), dto.getType());
+    }
 
 }
