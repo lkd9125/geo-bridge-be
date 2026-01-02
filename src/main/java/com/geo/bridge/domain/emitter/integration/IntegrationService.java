@@ -22,7 +22,7 @@ import reactor.core.publisher.Mono;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class EmitterIntegrationService {
+public class IntegrationService {
 
     /**
      * 통합 클라이언트 생성

@@ -10,7 +10,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class JsonUtil {
+public class JsonUtils {
     private static final ObjectMapper objectMapper;
 
     static {

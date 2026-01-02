@@ -7,7 +7,7 @@ import com.geo.bridge.domain.user.host.dto.SearchEmitterDTO;
 import com.geo.bridge.domain.user.host.dto.entity.EmitterClientDTO;
 import com.geo.bridge.domain.user.host.repository.EmitterClientRepository;
 import com.geo.bridge.global.base.BasePageRS;
-import com.geo.bridge.global.utils.JsonUtil;
+import com.geo.bridge.global.utils.JsonUtils;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +36,7 @@ public class EmitterClientService {
      */
     public Mono<Void> createClient(Mono<EmitterClientDTO> mono){
         return mono
-            .doOnNext(rq -> log.info(JsonUtil.toJson(rq)))
+            .doOnNext(rq -> log.info(JsonUtils.toJson(rq)))
             .flatMap(emitterClientRepository::save)
             .then();
     }

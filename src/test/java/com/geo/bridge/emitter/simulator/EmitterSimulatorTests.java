@@ -9,7 +9,7 @@ import org.locationtech.jts.geom.Coordinate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.geo.bridge.domain.emitter.EmitterSimulatorService;
+import com.geo.bridge.domain.emitter.SimulatorService;
 
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
@@ -19,7 +19,7 @@ import reactor.core.publisher.Mono;
 class EmitterSimulatorTests {
 
 	@Autowired
-	private EmitterSimulatorService simulatorService;
+	private SimulatorService simulatorService;
 
 	@Test
 	void createSimulatorCoordinates() {
@@ -29,7 +29,6 @@ class EmitterSimulatorTests {
 		path.add(new Coordinate(126.9784, 37.5670)); // B지점
 
 		Mono<List<Coordinate>> rs = simulatorService.createSimulatorCoordinates(path, 10D, 3);
-
 		rs
 			.doOnNext(coordinates -> log.info("DATA SIZE :: {}", coordinates.size()))
 			.flatMapIterable(coordinates -> coordinates) // FLUX를 MONO로

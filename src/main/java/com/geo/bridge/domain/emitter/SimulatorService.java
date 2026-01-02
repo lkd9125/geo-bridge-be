@@ -9,7 +9,7 @@ import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.locationtech.jts.geom.Coordinate;
 import org.springframework.stereotype.Service;
 
-import com.geo.bridge.domain.emitter.integration.EmitterIntegrationService;
+import com.geo.bridge.domain.emitter.integration.IntegrationService;
 import com.geo.bridge.domain.emitter.integration.client.EmitterClient;
 import com.geo.bridge.domain.emitter.model.CreateSimulatorClientDTO;
 
@@ -23,15 +23,15 @@ import reactor.core.publisher.Mono;
  * <p>기능</p>
  * <ul>
  *     <li>{@link #createSimulatorCoordinates(List, Double, int)} 위치 데이터 계산 후 발행</li>
- *     <li>{@link #createSimulatorClient(CreateSimulatorClientDTO)} 시뮬레이션 클라이언트 생성</li>
+ *     <li>{@link #createSimulatorClient(CreateSimulatorClientDTO)} 시뮬레이션 클라이언트 생성 및 등록(Context)</li>
  * </ul>
  */
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class EmitterSimulatorService {
+public class SimulatorService {
 
-    private final EmitterIntegrationService emitterIntegrationService;
+    private final IntegrationService integrationService;
     private final GeodeticCalculator calc = new GeodeticCalculator(DefaultGeographicCRS.WGS84); 
 
     /**
@@ -121,12 +121,13 @@ public class EmitterSimulatorService {
     }
 
     /**
-     * 시뮬레이션 클라이언트 생성
+     * 시뮬레이션 클라이언트 생성 및 등록
      * @param dto 클라이언트 생성용 DTO
-     * @return 생성 식별 번호
+     * @return 생성된 Emitter Client
      */
     public Mono<EmitterClient> createSimulatorClient(CreateSimulatorClientDTO dto){
-        return emitterIntegrationService.createIntegrationEmitterClient(dto.getName(), dto.getHost(), dto.getTopic(), dto.getUsername(), dto.getPassword(), dto.getType());
+        return integrationService.createIntegrationEmitterClient(dto.getName(), dto.getHost(), dto.getTopic(), dto.getUsername(), dto.getPassword(), dto.getType());
     }
+
 
 }

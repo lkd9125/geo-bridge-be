@@ -10,7 +10,7 @@ import org.locationtech.jts.geom.Coordinate;
 import org.springframework.integration.mqtt.core.Mqttv5ClientManager;
 
 import com.geo.bridge.global.config.IOScheduler;
-import com.geo.bridge.global.utils.JsonUtil;
+import com.geo.bridge.global.utils.JsonUtils;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -59,9 +59,6 @@ public class MqttEmitterClient implements EmitterClient{
         this.connect();
     }
 
-    /**
-     * MQTT 연결 기능
-     */
     @Override
     public void connect() {
         String clientId = "BRIDGE_CLIENT_%s_%s".formatted(UUID.randomUUID(), this.name);
@@ -82,9 +79,6 @@ public class MqttEmitterClient implements EmitterClient{
         }
     }
 
-    /**
-     * MQTT 연결 해제 기능
-     */
     @Override
     public void disconnect() {
         if(this.isConnected()){
@@ -96,25 +90,18 @@ public class MqttEmitterClient implements EmitterClient{
         }
     }
 
-    /**
-     * 연결여부 조회
-     */
     @Override
     public Boolean isConnected() {
         return this.isConnected;
     }
 
-    /**
-     * 데이터 전송 [x,y] 형태
-     */
     @Override
-    public Mono<Void> send(Coordinate coordinate) {
-        // [X,Y] 형태로 전송
+    public Mono<Void> send(String sendData) {
         return Mono.<Void>fromRunnable(() -> {
                 try {
                     mqttClient.publish(
                         topic,
-                        JsonUtil.toJson(Arrays.asList(coordinate.x, coordinate.y)).getBytes(),
+                        sendData.getBytes(),
                         1,
                         false
                     );

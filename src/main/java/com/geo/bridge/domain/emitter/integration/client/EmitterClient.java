@@ -1,7 +1,5 @@
 package com.geo.bridge.domain.emitter.integration.client;
 
-import org.locationtech.jts.geom.Coordinate;
-
 import reactor.core.publisher.Mono;
 
 /**
@@ -14,7 +12,7 @@ import reactor.core.publisher.Mono;
  *  <li>{@link #connect()} host에 해당되는 연결</li>
  *  <li>{@link #disconnect()} client 연결 해제</li>
  *  <li>{@link #isConnected()} client 연결 확인</li>
- *  <li>{@link #send(Coordinate coordinate)} 데이터 전송</li>
+ *  <li>{@link #send(String)} 데이터 전송</li>
  * </ul>
  */
 public interface EmitterClient {
@@ -24,5 +22,5 @@ public interface EmitterClient {
     void connect();
     void disconnect();
     Boolean isConnected();
-    Mono<Void> send(Coordinate coordinate);
+    Mono<Void> send(String sendData);
 }
