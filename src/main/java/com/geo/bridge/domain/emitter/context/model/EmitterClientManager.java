@@ -63,7 +63,7 @@ public class EmitterClientManager {
     }
 
     /**
-     * 포맷팅 바인딩
+     * TODO :: 포맷팅 바인딩
      * @param lat 위도
      * @param lon 경도
      * @return binding 한 전송 포맷
