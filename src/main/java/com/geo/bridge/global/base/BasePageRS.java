@@ -2,13 +2,16 @@ package com.geo.bridge.global.base;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import reactor.core.publisher.Flux;
 
 /**
- * 페이징 RQ
+ * 페이징 RS
  * 
  * <p>변수</p>
  * <ul>
@@ -42,6 +45,7 @@ public class BasePageRS<T> {
     private Integer page; // 현재 페이지
     private Integer size;
     private Integer range;
+
 
     private List<T> list; // 목록 리스트
 

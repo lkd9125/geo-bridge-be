@@ -61,11 +61,9 @@ public class UserHostService {
      */
     public Mono<BasePageRS<SearchUserHostRS>> getAllEmitterClientInfo(SearchUserHostRQ rq, BasePageRQ page){
         SearchEmitterDTO searchDTO = rq.toDto();
-        Pageable pageable = PageRequest.of(page.getPage() - 1, page.getSize());
-
-        return emitterClientService.getAllEmitterClient(searchDTO, pageable)
+        return emitterClientService.getAllEmitterClient(searchDTO, page)
             .flatMap(pageRS ->
-                 Flux.fromIterable(pageRS.getList())
+                Flux.fromIterable(pageRS.getList())
                     .map(SearchUserHostRS::fromDTO)
                     .collectList()
                     .map(newList -> 
