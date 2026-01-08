@@ -34,8 +34,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table("EMITTER_CLIENT")
-public class EmitterClientDTO {
+@Table("CLIENT_HOST")
+public class ClientHostDTO {
 
     @Id
     @Column("IDX")

@@ -4,7 +4,7 @@ package com.geo.bridge.domain.user.host.repository;
 import org.springframework.data.domain.Pageable;
 
 import com.geo.bridge.domain.user.host.dto.SearchEmitterDTO;
-import com.geo.bridge.domain.user.host.dto.entity.EmitterClientDTO;
+import com.geo.bridge.domain.user.host.dto.entity.ClientHostDTO;
 import com.geo.bridge.global.base.BasePageRS;
 
 import reactor.core.publisher.Mono;
@@ -17,6 +17,6 @@ public interface EmitterClientBaseRepository {
      * @param pageable 페이지네이션
      * @return
      */
-    Mono<BasePageRS<EmitterClientDTO>> findBySearch(SearchEmitterDTO searchDTO, Pageable pageable);
+    Mono<BasePageRS<ClientHostDTO>> findBySearch(SearchEmitterDTO searchDTO, Pageable pageable);
 
 }

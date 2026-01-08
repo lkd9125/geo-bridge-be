@@ -3,7 +3,7 @@ package com.geo.bridge.api.user.host.model;
 import java.time.LocalDateTime;
 
 import com.geo.bridge.domain.emitter.integration.model.EmitterType;
-import com.geo.bridge.domain.user.host.dto.entity.EmitterClientDTO;
+import com.geo.bridge.domain.user.host.dto.entity.ClientHostDTO;
 import com.geo.bridge.global.security.SecurityHelper;
 
 import jakarta.validation.constraints.NotNull;
@@ -40,9 +40,9 @@ public class CreateUserHostRQ {
 
     private String password;
 
-    public EmitterClientDTO toDto(){
+    public ClientHostDTO toDto(){
         LocalDateTime now = LocalDateTime.now();
-        return EmitterClientDTO.builder()
+        return ClientHostDTO.builder()
             .name(name)
             .host(host)
             .type(type)

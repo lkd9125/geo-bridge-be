@@ -4,7 +4,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.geo.bridge.domain.user.host.dto.SearchEmitterDTO;
-import com.geo.bridge.domain.user.host.dto.entity.EmitterClientDTO;
+import com.geo.bridge.domain.user.host.dto.entity.ClientHostDTO;
 import com.geo.bridge.domain.user.host.repository.EmitterClientRepository;
 import com.geo.bridge.global.base.BasePageRS;
 import com.geo.bridge.global.utils.JsonUtils;
@@ -34,7 +34,7 @@ public class EmitterClientService {
      * @param mono 생성객체
      * @return
      */
-    public Mono<Void> createClient(Mono<EmitterClientDTO> mono){
+    public Mono<Void> createClient(Mono<ClientHostDTO> mono){
         return mono
             .doOnNext(rq -> log.info(JsonUtils.toJson(rq)))
             .flatMap(emitterClientRepository::save)
@@ -47,7 +47,7 @@ public class EmitterClientService {
      * @param pageable 페이지네이션
      * @return
      */
-    public Mono<BasePageRS<EmitterClientDTO>> getAllEmitterClient(SearchEmitterDTO searchDTO, Pageable pageable){
+    public Mono<BasePageRS<ClientHostDTO>> getAllEmitterClient(SearchEmitterDTO searchDTO, Pageable pageable){
         return emitterClientRepository.findBySearch(searchDTO, pageable);
     }
     
