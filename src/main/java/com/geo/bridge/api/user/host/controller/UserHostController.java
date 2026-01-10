@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
 /**
- * DB 저장소에 클라이언트 정보 생성 컨트롤러
+ * 유저 호스트 API Controller
  * Validation 처리
  * 
  * <p>기능</p>

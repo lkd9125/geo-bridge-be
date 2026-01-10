@@ -18,11 +18,11 @@ import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
 /**
- * Client 생성
+ * HOST 서비스
  * <p>기능</p>
  * <ul>
- *     <li>{@link #createClient()} 클라이언트 생성</li>
- *     <li>{@link #getAllEmitterClient(SearchHostDTO, Pageable)} 클라이언트 리스트 조회</li>
+ *     <li>{@link #createClientHost(Mono)} 클라이언트 생성</li>
+ *     <li>{@link #getAllClientHost(SearchHostDTO, BasePageRQ)} 클라이언트 리스트 조회</li>
  * </ul>
  */
 @Service
@@ -34,13 +34,13 @@ public class HostService {
 
 
     /**
-     * DB Client Infomation Save
+     * DB HOST 데이터 Save
      * @param mono 생성객체
      * @return
      */
     public Mono<Void> createClientHost(Mono<HostDTO> mono){
         return mono
-            .doOnNext(rq -> log.info(JsonUtils.toJson(rq)))
+            .doOnNext(dto -> log.info(JsonUtils.toJson(dto)))
             .flatMap(emitterClientRepository::save)
             .then();
     }
