@@ -6,9 +6,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.geo.bridge.domain.user.host.dto.SearchEmitterDTO;
-import com.geo.bridge.domain.user.host.dto.entity.ClientHostDTO;
-import com.geo.bridge.domain.user.host.repository.EmitterClientRepository;
+import com.geo.bridge.domain.user.host.dto.SearchHostDTO;
+import com.geo.bridge.domain.user.host.dto.entity.HostDTO;
+import com.geo.bridge.domain.user.host.repository.HostRepository;
 import com.geo.bridge.global.base.BasePageRQ;
 import com.geo.bridge.global.base.BasePageRS;
 import com.geo.bridge.global.utils.JsonUtils;
@@ -22,15 +22,15 @@ import reactor.core.publisher.Mono;
  * <p>기능</p>
  * <ul>
  *     <li>{@link #createClient()} 클라이언트 생성</li>
- *     <li>{@link #getAllEmitterClient(SearchEmitterDTO, Pageable)} 클라이언트 리스트 조회</li>
+ *     <li>{@link #getAllEmitterClient(SearchHostDTO, Pageable)} 클라이언트 리스트 조회</li>
  * </ul>
  */
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class EmitterClientService {
+public class HostService {
 
-    private final EmitterClientRepository emitterClientRepository;
+    private final HostRepository emitterClientRepository;
 
 
     /**
@@ -38,7 +38,7 @@ public class EmitterClientService {
      * @param mono 생성객체
      * @return
      */
-    public Mono<Void> createClient(Mono<ClientHostDTO> mono){
+    public Mono<Void> createClientHost(Mono<HostDTO> mono){
         return mono
             .doOnNext(rq -> log.info(JsonUtils.toJson(rq)))
             .flatMap(emitterClientRepository::save)
@@ -51,15 +51,15 @@ public class EmitterClientService {
      * @param pageable 페이지네이션
      * @return
      */
-    public Mono<BasePageRS<ClientHostDTO>> getAllEmitterClient(SearchEmitterDTO searchDTO, BasePageRQ page){
+    public Mono<BasePageRS<HostDTO>> getAllClientHost(SearchHostDTO searchDTO, BasePageRQ page){
         Pageable pageable = PageRequest.of(page.getPage() - 1, page.getSize());
 
-        Mono<List<ClientHostDTO>> listMono = emitterClientRepository.findBySearch(searchDTO, pageable).collectList();
+        Mono<List<HostDTO>> listMono = emitterClientRepository.findBySearch(searchDTO, pageable).collectList();
         Mono<Long> cntMono = emitterClientRepository.countBySearch(searchDTO);
 
         return Mono.zip(listMono, cntMono)
             .map(tuple -> {
-                List<ClientHostDTO> list = tuple.getT1();
+                List<HostDTO> list = tuple.getT1();
                 Long cnt = tuple.getT2();
 
                 return BasePageRS.of(

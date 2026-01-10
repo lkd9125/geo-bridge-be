@@ -34,8 +34,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table("CLIENT_HOST")
-public class ClientHostDTO {
+@Table("HOST")
+public class HostDTO {
 
     @Id
     @Column("IDX")

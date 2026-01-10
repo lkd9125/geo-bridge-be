@@ -1,7 +1,7 @@
-CREATE TABLE `CLIENT_HOST` (
+CREATE TABLE `HOST` (
   `IDX` bigint NOT NULL AUTO_INCREMENT COMMENT '고유 PK',
-  `NAME` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '클라이언트 이름',
-  `HOST` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '연결 호스트',
+  `NAME` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '호스트 이름',
+  `HOST` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '연결 호스트 주소',
   `TYPE` enum('MQTT','TCP','WS','HTTP') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '연결타입',
   `TOPIC` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '연결 호스트 토픽',
   `HOST_ID` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '연결 타입의 아이디',
@@ -11,4 +11,4 @@ CREATE TABLE `CLIENT_HOST` (
   `UPDATE_DT` datetime NOT NULL COMMENT '수정일시',
   `UPDATE_AT` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '수정자',
   PRIMARY KEY (`IDX`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Emitter 클라이언트 정보';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='연결 호스트 정보';

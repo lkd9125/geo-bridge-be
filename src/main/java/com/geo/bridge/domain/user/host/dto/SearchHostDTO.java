@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Emitter 검색용 DTO
+ * Host 검색용 DTO
  * 
  * <p>변수</p>
  * <ul>
@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class SearchEmitterDTO {
+public class SearchHostDTO {
 
     private Long idx;
     

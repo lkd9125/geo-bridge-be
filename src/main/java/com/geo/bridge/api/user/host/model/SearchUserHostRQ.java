@@ -1,7 +1,7 @@
 package com.geo.bridge.api.user.host.model;
 
 
-import com.geo.bridge.domain.user.host.dto.SearchEmitterDTO;
+import com.geo.bridge.domain.user.host.dto.SearchHostDTO;
 
 import lombok.Data;
 
@@ -23,8 +23,8 @@ public class SearchUserHostRQ {
 
     private Long idx;
 
-    public SearchEmitterDTO toDto(){ 
-        return SearchEmitterDTO.builder()
+    public SearchHostDTO toDto(){ 
+        return SearchHostDTO.builder()
             .idx(idx)
             .build();
     }

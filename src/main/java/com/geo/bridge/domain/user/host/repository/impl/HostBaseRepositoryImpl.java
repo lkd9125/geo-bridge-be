@@ -7,9 +7,9 @@ import org.springframework.data.relational.core.query.Criteria;
 import org.springframework.data.relational.core.query.Query;
 import org.springframework.stereotype.Repository;
 
-import com.geo.bridge.domain.user.host.dto.SearchEmitterDTO;
-import com.geo.bridge.domain.user.host.dto.entity.ClientHostDTO;
-import com.geo.bridge.domain.user.host.repository.EmitterClientBaseRepository;
+import com.geo.bridge.domain.user.host.dto.SearchHostDTO;
+import com.geo.bridge.domain.user.host.dto.entity.HostDTO;
+import com.geo.bridge.domain.user.host.repository.HostBaseRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,17 +19,17 @@ import reactor.core.publisher.Mono;
 @Repository
 @RequiredArgsConstructor
 @Slf4j
-public class EmitterClientBaseRepositoryImpl implements EmitterClientBaseRepository{
+public class HostBaseRepositoryImpl implements HostBaseRepository{
 
     private final R2dbcEntityTemplate template;
     private final String TABLE = "CLIENT_HOST";
 
     @Override
-    public Flux<ClientHostDTO> findBySearch(SearchEmitterDTO searchDTO, Pageable pageable) {
+    public Flux<HostDTO> findBySearch(SearchHostDTO searchDTO, Pageable pageable) {
         Criteria criteria = where(searchDTO);
 
         return template
-            .select(ClientHostDTO.class)
+            .select(HostDTO.class)
             .from(this.TABLE)
             .matching(
                 Query.query(criteria)
@@ -41,15 +41,15 @@ public class EmitterClientBaseRepositoryImpl implements EmitterClientBaseReposit
     }
 
     @Override
-    public Mono<Long> countBySearch(SearchEmitterDTO searchDTO) {
+    public Mono<Long> countBySearch(SearchHostDTO searchDTO) {
         Criteria criteria = where(searchDTO);
 
         return template
-            .count(Query.query(criteria), ClientHostDTO.class);
+            .count(Query.query(criteria), HostDTO.class);
     }
 
 
-    private Criteria where(SearchEmitterDTO searchDTO){
+    private Criteria where(SearchHostDTO searchDTO){
         Criteria criteria = Criteria.empty();
 
         if(searchDTO.getIdx() != null){
