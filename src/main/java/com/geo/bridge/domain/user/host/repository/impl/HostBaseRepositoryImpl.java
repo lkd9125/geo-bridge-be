@@ -22,7 +22,7 @@ import reactor.core.publisher.Mono;
 public class HostBaseRepositoryImpl implements HostBaseRepository{
 
     private final R2dbcEntityTemplate template;
-    private final String TABLE = "CLIENT_HOST";
+    private final String TABLE = "HOST";
 
     @Override
     public Flux<HostDTO> findBySearch(SearchHostDTO searchDTO, Pageable pageable) {
