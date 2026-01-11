@@ -58,20 +58,23 @@ public class EmitterClientManager {
 
     private Disposable disposable;
 
+    private int cycle;
+
     /**
      * HOST에 전송 시작
      */
     public void excute(){
-        log.info("Client Excute RunningTime :: {} Second", cooridnates.size());
+        log.info("Client Excute RunningTime :: {} Second", cooridnates.size() * cycle);
         this.status = EmitterClientStatus.PLAYING;
         
         this.disposable = Flux.fromIterable(cooridnates)
+            .repeat(this.cycle - 1) // [핵심] 1회 실행 후 (cycle-1)번 더 반복 -> 총 cycle번 실행
             .delayElements(Duration.ofSeconds(1L))
             .map(cooridnate -> {
                 // 파라미터 세팅
                 Map<String, Object> parameters = new HashMap<>();
-                parameters.put("#{lat}", cooridnate.getY());
-                parameters.put("#{lon}", cooridnate.getX());
+                parameters.put("lat", cooridnate.getY());
+                parameters.put("lon", cooridnate.getX());
 
                 return this.bindFormat(parameters);
             })

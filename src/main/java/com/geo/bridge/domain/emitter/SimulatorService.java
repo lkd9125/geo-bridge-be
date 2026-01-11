@@ -15,6 +15,7 @@ import com.geo.bridge.domain.emitter.model.CreateSimulatorClientDTO;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
@@ -41,12 +42,7 @@ public class SimulatorService {
      * @param cycle 반복 주기
      * @return
      */
-    public Mono<List<Coordinate>> createSimulatorCoordinates(List<Coordinate> routeCoordinates, Double speed, int cycle){
-        // 최소 한번은 반복
-        if(cycle < 1){
-            cycle = 1;
-        }
-
+    public Mono<List<Coordinate>> createSimulatorCoordinates(List<Coordinate> routeCoordinates, Double speed){
         // 첫 좌표와 마지막 좌표가 같지 않으면 첫좌표 추가
         Coordinate startCoord = routeCoordinates.get(0);
         Coordinate endCoord = routeCoordinates.get(routeCoordinates.size() - 1);
@@ -110,14 +106,8 @@ public class SimulatorService {
             }
         }
 
-        // 반복주기만큼 좌표 갯수추가
-        List<Coordinate> result = new ArrayList<>();
-        for(int i = 0; i < cycle; i++){
-            result.addAll(timeStepCoordinates);
-        }
-        
-
-        return Mono.just(result);
+        return Flux.fromIterable(timeStepCoordinates)
+            .collectList();
     }
 
     /**

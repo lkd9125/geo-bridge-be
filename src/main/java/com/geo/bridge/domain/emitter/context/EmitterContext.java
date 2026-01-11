@@ -39,11 +39,16 @@ public class EmitterContext {
      * @param cooridates 전송 좌표 데이터
      * @return UUID
      */
-    public static String put(String custNo, EmitterClient client, String format, List<Coordinate> cooridates){
+    public static String put(String custNo, EmitterClient client, String format, List<Coordinate> cooridates, int cycle){
+        if(cycle < 1){
+            cycle = 1;
+        }
+
         EmitterClientManager manager = new EmitterClientManager();
         manager.setClient(client);
         manager.setFormat(format);
         manager.setCooridnates(cooridates);
+        manager.setCycle(cycle);
 
         Map<String, EmitterClientManager> clientMap = emitterManagerMap.get(custNo);
         if(clientMap == null){
@@ -51,7 +56,8 @@ public class EmitterContext {
         }
 
         clientMap.put(manager.getUuid(), manager);
-
+        emitterManagerMap.put(custNo, clientMap);
+        
         return manager.getUuid();
     }
 

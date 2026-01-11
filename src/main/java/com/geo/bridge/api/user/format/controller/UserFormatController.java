@@ -19,7 +19,7 @@ import reactor.core.publisher.Mono;
  * 
  * <p>기능</p>
  * <ul>
- *  <li>{@link #createFormat(Mono)} 포맷 생성</li>
+ *  <li>{@link #createFormat(Mono)} User Format 저장</li>
  * </ul>
  */
 @RestController
@@ -30,9 +30,16 @@ public class UserFormatController {
 
     private final UserFormatService userFormatService;
 
+    /**
+     * User Format 저장
+     * @param rq FormatTable 데이터
+     * @return
+     */
     @PostMapping
     public Mono<Void> createFormat(@RequestBody @Valid Mono<CreateFormatRQ> rq){
         return userFormatService.createForamt(rq);
     }
+
+
 
 }

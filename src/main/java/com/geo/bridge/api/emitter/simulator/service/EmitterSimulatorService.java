@@ -11,6 +11,7 @@ import com.geo.bridge.domain.emitter.context.EmitterContext;
 import com.geo.bridge.domain.emitter.integration.client.EmitterClient;
 import com.geo.bridge.domain.emitter.model.CreateSimulatorClientDTO;
 import com.geo.bridge.global.base.BasePointDTO;
+import com.geo.bridge.global.security.SecurityHelper;
 import com.geo.bridge.global.utils.SpeedUtils;
 import com.geo.bridge.global.utils.SpeedUtils.SpeedUnit;
 
@@ -66,27 +67,25 @@ public class EmitterSimulatorService {
                     .toList();
 
                 Mono<EmitterClient> client = simulatorService.createSimulatorClient(dto);
-                Mono<List<Coordinate>> coordinates = simulatorService.createSimulatorCoordinates(rouCoordinates, emitterSimulatrRQ.getSpeed(), emitterSimulatrRQ.getCycle());
+                Mono<List<Coordinate>> coordinates = simulatorService.createSimulatorCoordinates(rouCoordinates, emitterSimulatrRQ.getSpeed());
 
-                return Mono.zip(client, coordinates, Mono.just(emitterSimulatrRQ.getFormat()));
+                return Mono.zip(client, coordinates, Mono.just(emitterSimulatrRQ.getFormat()), Mono.just(emitterSimulatrRQ.getCycle()));
             })
             // 3. client context 등록
             .map(tuple -> {
                 EmitterClient client = tuple.getT1();
                 List<Coordinate> coordinates = tuple.getT2();
                 String format = tuple.getT3();
+                Integer cycle = tuple.getT4();
 
-                return EmitterContext.put(this.custNo(), client, format, coordinates);
+                return EmitterContext.put(SecurityHelper.securityHolder().toString(), client, format, coordinates, cycle);
             })
             // 4. 데이터 전송 시작
             .doOnSuccess(uuid -> {
-                EmitterContext.excute(this.custNo(), uuid);
+                EmitterContext.excute(SecurityHelper.securityHolder().toString(), uuid);
             })
             ;
     }
 
-    private String custNo(){
-        return "TEST";
-    }
 
 }

@@ -4,7 +4,9 @@ import java.util.Arrays;
 import java.util.UUID;
 
 import org.eclipse.paho.mqttv5.client.IMqttAsyncClient;
+import org.eclipse.paho.mqttv5.client.MqttClient;
 import org.eclipse.paho.mqttv5.client.MqttConnectionOptions;
+import org.eclipse.paho.mqttv5.client.persist.MemoryPersistence;
 import org.eclipse.paho.mqttv5.common.MqttException;
 import org.locationtech.jts.geom.Coordinate;
 import org.springframework.integration.mqtt.core.Mqttv5ClientManager;
@@ -39,7 +41,7 @@ public class MqttEmitterClient implements EmitterClient{
     private String topic;
     private String username;
     private String password;
-    private IMqttAsyncClient mqttClient;
+    private MqttClient mqttClient;
     
     /**
      * MQTT 클라이언트 생성과 동시에 연결
@@ -63,13 +65,13 @@ public class MqttEmitterClient implements EmitterClient{
     public void connect() {
         String clientId = "BRIDGE_CLIENT_%s_%s".formatted(UUID.randomUUID(), this.name);
         try{
-            MqttConnectionOptions options = new MqttConnectionOptions();
-            options.setServerURIs(new String[]{this.host});
-    
-            Mqttv5ClientManager manager = new Mqttv5ClientManager(options, clientId);
+            MqttConnectionOptions opts = new MqttConnectionOptions();
+            opts.setServerURIs(new String[]{this.host});
 
-            this.mqttClient = manager.getClient();
-            this.mqttClient.connect();
+            MqttClient mqttClient = new MqttClient(this.host, clientId, new MemoryPersistence());
+            mqttClient.connect(opts);
+            
+            this.mqttClient = mqttClient;
             log.info("Try '{}' TCP Connect {} : {}", name, clientId, this.host);
             this.isConnected = true;
         } catch (MqttException e){
