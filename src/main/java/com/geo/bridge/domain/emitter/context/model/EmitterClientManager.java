@@ -64,9 +64,10 @@ public class EmitterClientManager {
      * HOST에 전송 시작
      */
     public void excute(){
+        stop();
+
         log.info("Client Excute RunningTime :: {} Second", cooridnates.size() * cycle);
         this.status = EmitterClientStatus.PLAYING;
-        
         this.disposable = Flux.fromIterable(cooridnates)
             .repeat(this.cycle - 1) // [핵심] 1회 실행 후 (cycle-1)번 더 반복 -> 총 cycle번 실행
             .delayElements(Duration.ofSeconds(1L))
@@ -89,7 +90,12 @@ public class EmitterClientManager {
      * HOST에 전송 정지
      */
     public void stop(){
-        this.disposable.dispose();
+        if (this.disposable != null && !this.disposable.isDisposed()) {
+            this.disposable.dispose();
+            log.info("Client stopped manually.");
+            
+            this.status = EmitterClientStatus.END;
+        }
     }
 
     /**
