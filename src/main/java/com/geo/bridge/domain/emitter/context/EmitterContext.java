@@ -37,6 +37,7 @@ public class EmitterContext {
      * @param client Emitter Client
      * @param format 전송 포맷팅
      * @param cooridates 전송 좌표 데이터
+     * @param cycle 반복 횟수
      * @return UUID
      */
     public static String put(String custNo, EmitterClient client, String format, List<Coordinate> cooridates, int cycle){

@@ -30,6 +30,8 @@ import reactor.core.publisher.Flux;
  *  <li>{@link #format} 포맷팅</li>
  *  <li>{@link #disposable} 흐름 제어</li>
  *  <li>{@link #fastBinder} String 바인딩 객체(내부용)</li>
+ *  <li>{@link #cycle} 반복 횟수</li>
+ *  <li>{@link #baseParameters} 바인딩 시킬 기본 파라미터</li>
  * </ul>
  * 
  * <p>기능</p>
@@ -37,7 +39,6 @@ import reactor.core.publisher.Flux;
  *  <li>{@link #excute()} Client 데이터 전송 시작</li>
  *  <li>{@link #bindFormat(Map)} 포맷팅 바인딩</li>
  *  <li>{@link #stop()} Client 데이터 전송 정지</li>
- *  <li>{@link #setFormat(String)()} format settings</li>
  * </ul>
  */
 @Data
@@ -59,6 +60,8 @@ public class EmitterClientManager {
     private Disposable disposable;
 
     private int cycle;
+
+    private Map<String, Object> baseParameters;
 
     /**
      * HOST에 전송 시작

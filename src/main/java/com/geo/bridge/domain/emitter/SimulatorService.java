@@ -39,7 +39,6 @@ public class SimulatorService {
      * coordinates와 속도에 해당되는 좌표 리스트 생성
      * @param routeCoordinates 유저가 선택한 좌표 리스트
      * @param speed 속도(m/s)
-     * @param cycle 반복 주기
      * @return
      */
     public Mono<List<Coordinate>> createSimulatorCoordinates(List<Coordinate> routeCoordinates, Double speed){
