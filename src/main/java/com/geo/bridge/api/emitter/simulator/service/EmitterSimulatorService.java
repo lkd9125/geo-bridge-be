@@ -3,6 +3,7 @@ package com.geo.bridge.api.emitter.simulator.service;
 import java.util.List;
 
 import org.locationtech.jts.geom.Coordinate;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import com.geo.bridge.api.emitter.simulator.model.EmitterSimulatorRQ;
@@ -69,22 +70,21 @@ public class EmitterSimulatorService {
                 Mono<EmitterClient> client = simulatorService.createSimulatorClient(dto);
                 Mono<List<Coordinate>> coordinates = simulatorService.createSimulatorCoordinates(rouCoordinates, emitterSimulatrRQ.getSpeed());
 
-                return Mono.zip(client, coordinates, Mono.just(emitterSimulatrRQ.getFormat()), Mono.just(emitterSimulatrRQ.getCycle()));
+                return Mono.zip(client, coordinates, Mono.just(emitterSimulatrRQ.getFormat()), Mono.just(emitterSimulatrRQ.getCycle()), SecurityHelper.securityHolder());
             })
-            // 3. client context 등록
+            // 3. client context 등록 및 시작
             .map(tuple -> {
                 EmitterClient client = tuple.getT1();
                 List<Coordinate> coordinates = tuple.getT2();
                 String format = tuple.getT3();
                 Integer cycle = tuple.getT4();
+                UserDetails userDetails = tuple.getT5();
 
-                return EmitterContext.put(SecurityHelper.securityHolder().toString(), client, format, coordinates, cycle);
-            })
-            // 4. 데이터 전송 시작
-            .doOnSuccess(uuid -> {
-                EmitterContext.excute(SecurityHelper.securityHolder().toString(), uuid);
-            })
-            ;
+                String uuid = EmitterContext.put(userDetails.getUsername(), client, format, coordinates, cycle);
+                EmitterContext.excute(userDetails.getUsername(), uuid);
+
+                return uuid;
+            });
     }
 
 

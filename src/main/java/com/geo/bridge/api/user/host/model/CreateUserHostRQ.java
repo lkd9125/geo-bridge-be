@@ -8,6 +8,7 @@ import com.geo.bridge.global.security.SecurityHelper;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import reactor.core.publisher.Mono;
 
 /**
  * Emitter Client 저장 RQ Web Model
@@ -40,20 +41,22 @@ public class CreateUserHostRQ {
 
     private String password;
 
-    public HostDTO toDto(){
+    public Mono<HostDTO> toDto(){
         LocalDateTime now = LocalDateTime.now();
-        return HostDTO.builder()
-            .name(name)
-            .host(host)
-            .type(type)
-            .topic(topic)
-            .hostId(hostId)
-            .password(password)
-            .createDt(now)
-            .updateDt(now)
-            .createAt(SecurityHelper.securityHolder().toString())
-            .updateAt(SecurityHelper.securityHolder().toString())
-            .build();
+        return SecurityHelper.securityHolder()
+            .map(userDetails -> HostDTO.builder()
+                .name(name)
+                .host(host)
+                .type(type)
+                .topic(topic)
+                .hostId(hostId)
+                .password(password)
+                .createDt(now)
+                .updateDt(now)
+                .createAt(userDetails.getUsername())
+                .updateAt(userDetails.getUsername())
+                .build()
+        );
     }
 
 }

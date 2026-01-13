@@ -21,6 +21,10 @@ public class JsonUtils {
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
+    public static ObjectMapper getInstance(){
+        return objectMapper;
+    }
+
     /**
      * 객체를 JSON 문자열로 변환
      *

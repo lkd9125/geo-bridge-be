@@ -1,5 +1,6 @@
 package com.geo.bridge.api.user.host.service;
 
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,6 +11,7 @@ import com.geo.bridge.domain.user.host.HostService;
 import com.geo.bridge.domain.user.host.dto.SearchHostDTO;
 import com.geo.bridge.global.base.BasePageRQ;
 import com.geo.bridge.global.base.BasePageRS;
+import com.geo.bridge.global.security.SecurityHelper;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,7 +45,7 @@ public class UserHostService {
     @Transactional
     public Mono<Void> createEmitterClientInfo(Mono<CreateUserHostRQ> mono){
         return mono
-            .map(CreateUserHostRQ::toDto)
+            .flatMap(CreateUserHostRQ::toDto)
             .flatMap(dto -> clientHostService.createClientHost(Mono.just(dto)))
             .then();
     }

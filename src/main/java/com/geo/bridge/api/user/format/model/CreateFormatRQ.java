@@ -7,6 +7,7 @@ import com.geo.bridge.global.security.SecurityHelper;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import reactor.core.publisher.Mono;
 
 /**
  * <p>변수</p>
@@ -28,17 +29,19 @@ public class CreateFormatRQ {
 
     private String contentType;
 
-    public FormatDTO toDto(){
+    public Mono<FormatDTO> toDto(){
         LocalDateTime now = LocalDateTime.now();
-        return FormatDTO.builder()
-            .name(name)
-            .format(format)
-            .contentType(contentType)
-            .createDt(now)
-            .updateDt(now)
-            .createAt(SecurityHelper.securityHolder().toString())
-            .updateAt(SecurityHelper.securityHolder().toString())
-            .build();
+        return SecurityHelper.securityHolder()
+            .map(userDetails -> FormatDTO.builder()
+                    .name(name)
+                    .format(format)
+                    .contentType(contentType)
+                    .createDt(now)
+                    .updateDt(now)
+                    .createAt(userDetails.getUsername())
+                    .updateAt(userDetails.getUsername())
+                    .build()
+                );
     }
     
 }

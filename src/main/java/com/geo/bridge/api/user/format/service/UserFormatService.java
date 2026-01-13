@@ -18,7 +18,7 @@ public class UserFormatService {
 
     public Mono<Void> createForamt(Mono<CreateFormatRQ> mono){
         return mono
-            .map(CreateFormatRQ::toDto)
+            .flatMap(CreateFormatRQ::toDto)
             .flatMap(dto -> formatService.createForamt(Mono.just(dto)));
     }
 
