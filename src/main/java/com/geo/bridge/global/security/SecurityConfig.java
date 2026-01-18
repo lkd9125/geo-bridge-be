@@ -59,6 +59,7 @@ public class SecurityConfig {
             .addFilterAt(this.authenticationWebFilter(), SecurityWebFiltersOrder.AUTHENTICATION) 
             .authorizeExchange(auth -> 
                 auth.pathMatchers(this.PERMIT_URL).permitAll()
+                    .anyExchange().authenticated()
             )
             .exceptionHandling(exceptionHandler -> {
                 exceptionHandler.authenticationEntryPoint(reactiveAuthenticationEntryPoint); // 401 Exception 핸들러
