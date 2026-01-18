@@ -64,14 +64,10 @@ public class UserHostService {
     public Mono<BasePageRS<SearchUserHostRS>> getAllEmitterClientInfo(SearchUserHostRQ rq, BasePageRQ page){
         SearchHostDTO searchDTO = rq.toDto();
 
-        SecurityHelper.securityHolder()
-            .map(UserDetails::getUsername);
-
         return SecurityHelper.securityHolder()
             .flatMap(user -> userService.getUserByUsername(user.getUsername()))
             .flatMap(user -> {
                 searchDTO.setUserIdx(user.getIdx());
-                
                 return clientHostService.getAllClientHost(searchDTO, page);
             })
             .flatMap(pageRS ->
