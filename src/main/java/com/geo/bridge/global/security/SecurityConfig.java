@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.authentication.AuthenticationWebFilter;
 import org.springframework.security.web.server.header.XFrameOptionsServerHttpHeadersWriter.Mode;
+import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsConfigurationSource;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
@@ -19,6 +20,8 @@ import com.geo.bridge.domain.user.repository.UserRepository;
 import com.geo.bridge.global.security.authentication.AuthenticationWebLoginConverter;
 import com.geo.bridge.global.security.authentication.AuthenticationWebLoginManager;
 import com.geo.bridge.global.security.authentication.AuthenticationWebLoginSuccessHandler;
+import com.geo.bridge.global.security.authorization.AuthorizationJwtFilter;
+import com.geo.bridge.global.security.handler.ReactiveAuthenticationEntryPoint;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +33,12 @@ public class SecurityConfig {
 
     private final UserRepository userRepository;
     private final TokenProvider tokenProvider;
+    private final ReactiveAuthenticationEntryPoint reactiveAuthenticationEntryPoint;
+
+    private final String[] PERMIT_URL = {
+        "/api/v1/user/info",
+        "/api/v1/user/login",
+    };
 
     /**
      * Security Filter 전체 설정
@@ -45,10 +54,14 @@ public class SecurityConfig {
             .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.mode(Mode.SAMEORIGIN)))
             .formLogin(formLogin -> formLogin.disable())
             .httpBasic(httpBasic -> httpBasic.disable())
-            .addFilterAt(this.authenticationWebFilter(), SecurityWebFiltersOrder.AUTHENTICATION)
+            .addFilterBefore(new AuthorizationJwtFilter(tokenProvider), SecurityWebFiltersOrder.AUTHENTICATION) // JWT 인가
+            .addFilterAt(this.authenticationWebFilter(), SecurityWebFiltersOrder.AUTHENTICATION) 
             .authorizeExchange(auth -> 
-                auth.pathMatchers("/**").permitAll()
+                auth.pathMatchers(this.PERMIT_URL).permitAll()
             )
+            .exceptionHandling(exceptionHandler -> {
+                exceptionHandler.authenticationEntryPoint(reactiveAuthenticationEntryPoint); // 401 Exception 핸들러
+            })
             .build();
     }
 
@@ -97,6 +110,10 @@ public class SecurityConfig {
         AuthenticationWebFilter authenticationWebFilter = new AuthenticationWebFilter(authenticationWebLoginManager);
         authenticationWebFilter.setServerAuthenticationConverter(authenticationWebLoginConverter);
         authenticationWebFilter.setAuthenticationSuccessHandler(authenticationWebLoginSuccessHandler);
+
+        authenticationWebFilter.setRequiresAuthenticationMatcher(
+            ServerWebExchangeMatchers.pathMatchers("/api/v1/user/login")
+        );
 
         return authenticationWebFilter;
     }

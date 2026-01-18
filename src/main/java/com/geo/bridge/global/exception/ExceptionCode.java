@@ -15,6 +15,9 @@ public enum ExceptionCode {
 	UNSUPPORTED_JWT("J404", 400, "지원하지 않는 JWT"),
 	ERROR_JWT("J405", 400, "잘못된 JWT"),
 	NOT_HEADER_JWT("J406", 400, "JWT 토큰이 헤더에 담겨있지 않음"),
+
+    NOT_AUTHENTICATION_USER("P001", 400, "인증실패"),
+	NOT_AUTHORIZED_USER("P002", 401, "인가되지 않은 사용자"),
     
     SERVER_INVALID("SI500", 500, "서버에러입니다."),
     ;
