@@ -3,6 +3,7 @@ package com.geo.bridge.domain.user.host.repository.impl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
+import org.springframework.data.r2dbc.core.ReactiveSelectOperation.TerminatingSelect;
 import org.springframework.data.relational.core.query.Criteria;
 import org.springframework.data.relational.core.query.Query;
 import org.springframework.stereotype.Repository;
@@ -53,8 +54,13 @@ public class HostBaseRepositoryImpl implements HostBaseRepository{
         Criteria criteria = Criteria.empty();
 
         if(searchDTO.getIdx() != null){
-            criteria.and("IDX").is(searchDTO.getIdx());
+            criteria = criteria.and("IDX").is(searchDTO.getIdx());
         }
+
+        if(searchDTO.getUserIdx() != null){
+            criteria = criteria.and("CREATE_AT").is(searchDTO.getUserIdx());
+        }
+
         return criteria;
     }
 

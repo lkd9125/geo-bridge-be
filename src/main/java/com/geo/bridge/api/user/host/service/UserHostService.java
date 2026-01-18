@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.geo.bridge.api.user.host.model.CreateUserHostRQ;
 import com.geo.bridge.api.user.host.model.SearchUserHostRQ;
 import com.geo.bridge.api.user.host.model.SearchUserHostRS;
+import com.geo.bridge.domain.user.UserService;
 import com.geo.bridge.domain.user.host.HostService;
 import com.geo.bridge.domain.user.host.dto.SearchHostDTO;
 import com.geo.bridge.global.base.BasePageRQ;
@@ -34,6 +35,7 @@ import reactor.core.publisher.Mono;
 public class UserHostService {
 
     private final HostService clientHostService;
+    private final UserService userService;
 
     /**
      * Emitter Client 데이터 생성
@@ -61,7 +63,17 @@ public class UserHostService {
      */
     public Mono<BasePageRS<SearchUserHostRS>> getAllEmitterClientInfo(SearchUserHostRQ rq, BasePageRQ page){
         SearchHostDTO searchDTO = rq.toDto();
-        return clientHostService.getAllClientHost(searchDTO, page)
+
+        SecurityHelper.securityHolder()
+            .map(UserDetails::getUsername);
+
+        return SecurityHelper.securityHolder()
+            .flatMap(user -> userService.getUserByUsername(user.getUsername()))
+            .flatMap(user -> {
+                searchDTO.setUserIdx(user.getIdx());
+                
+                return clientHostService.getAllClientHost(searchDTO, page);
+            })
             .flatMap(pageRS ->
                 Flux.fromIterable(pageRS.getList())
                     .map(SearchUserHostRS::fromDTO)

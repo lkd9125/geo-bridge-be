@@ -20,5 +20,7 @@ import lombok.NoArgsConstructor;
 public class SearchHostDTO {
 
     private Long idx;
+
+    private Long userIdx;
     
 }
