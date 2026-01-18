@@ -16,11 +16,12 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsConfigurationSource;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
-import com.geo.bridge.domain.user.repository.UserRepository;
+import com.geo.bridge.domain.user.UserService;
 import com.geo.bridge.global.security.authentication.AuthenticationWebLoginConverter;
 import com.geo.bridge.global.security.authentication.AuthenticationWebLoginManager;
-import com.geo.bridge.global.security.authentication.AuthenticationWebLoginSuccessHandler;
 import com.geo.bridge.global.security.authorization.AuthorizationJwtFilter;
+import com.geo.bridge.global.security.handler.AuthenticationWebLoginFailureHandler;
+import com.geo.bridge.global.security.handler.AuthenticationWebLoginSuccessHandler;
 import com.geo.bridge.global.security.handler.ReactiveAuthenticationEntryPoint;
 
 import lombok.RequiredArgsConstructor;
@@ -31,7 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final TokenProvider tokenProvider;
     private final ReactiveAuthenticationEntryPoint reactiveAuthenticationEntryPoint;
 
@@ -101,15 +102,18 @@ public class SecurityConfig {
     public AuthenticationWebFilter authenticationWebFilter(){
 
         // [CUSTOM] Security ReactiveAuthenticationManager(MVC의 Authentication Provider와 같음) 
-        AuthenticationWebLoginManager authenticationWebLoginManager = new AuthenticationWebLoginManager(this.passwordEncoder(), userRepository);
+        AuthenticationWebLoginManager authenticationWebLoginManager = new AuthenticationWebLoginManager(this.passwordEncoder(), userService);
         // [CUSTOM] Login RQ convert
         AuthenticationWebLoginConverter authenticationWebLoginConverter = new AuthenticationWebLoginConverter();
-        // [CUST] Loing Success Handler
+        // [CUSTOM] Loing Success Handler
         AuthenticationWebLoginSuccessHandler authenticationWebLoginSuccessHandler = new AuthenticationWebLoginSuccessHandler(tokenProvider);
+        // [CUSTOM] Login Failure Handler
+        AuthenticationWebLoginFailureHandler authenticationWebLoginFailureHandler = new AuthenticationWebLoginFailureHandler();
 
         AuthenticationWebFilter authenticationWebFilter = new AuthenticationWebFilter(authenticationWebLoginManager);
         authenticationWebFilter.setServerAuthenticationConverter(authenticationWebLoginConverter);
         authenticationWebFilter.setAuthenticationSuccessHandler(authenticationWebLoginSuccessHandler);
+        authenticationWebFilter.setAuthenticationFailureHandler(authenticationWebLoginFailureHandler);
 
         authenticationWebFilter.setRequiresAuthenticationMatcher(
             ServerWebExchangeMatchers.pathMatchers("/api/v1/user/login")

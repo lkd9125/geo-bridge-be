@@ -2,6 +2,8 @@ package com.geo.bridge.api.user.info.model;
 
 import java.time.LocalDateTime;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import com.geo.bridge.domain.user.dto.entity.UserDTO;
 
 import jakarta.validation.constraints.NotNull;
@@ -16,11 +18,11 @@ public class CreateUserRQ {
     @NotNull
     private String password;
 
-    public UserDTO toDto(){
+    public UserDTO toDto(PasswordEncoder encoder){
         LocalDateTime now = LocalDateTime.now();
         return UserDTO.builder()
             .username(username)
-            .password(password)
+            .password(encoder.encode(password))
             .createAt(username)
             .createDt(now)
             .updateAt(username)

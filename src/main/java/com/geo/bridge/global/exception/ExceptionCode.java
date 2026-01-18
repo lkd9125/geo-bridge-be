@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 public enum ExceptionCode {
 
     PARAMETER_INVALID("PI400", 400, "파라미터가 잘못되었습니다."),
+    DUPLICATION_INVALID("PI401", 400, "중복된 데이터 입니다."),
+    NOT_SERACH_DATA("PI402", 400, "조회되는 데이터가 없습니다."),
 
     REFRESH_JWT_EXPIRED("J401", 400, "리프레쉬 만료"),
 	INVALID_JWT_SIGN("J402", 400, "잘못된 JWT 서명"),
@@ -18,6 +20,7 @@ public enum ExceptionCode {
 
     NOT_AUTHENTICATION_USER("P001", 400, "인증실패"),
 	NOT_AUTHORIZED_USER("P002", 401, "인가되지 않은 사용자"),
+    LOGIN_FAIL("P003", 400, "로그인 실패"),
     
     SERVER_INVALID("SI500", 500, "서버에러입니다."),
     ;

@@ -62,6 +62,27 @@ public class GlobalExceptionHandler {
      * @param e exception
      * @return
      */
+    @ExceptionHandler(BaseException.class)
+    public Mono<ResponseEntity<BaseExceptionRS>> handleAllException(BaseException e) {
+        log.error("Exception Class :: {}, Mesaage :: {}", e.getClass(), e.getMessage());
+        log.error("Unhandled Exception: ", e);
+        
+        ExceptionCode code = e.getErrorCode();
+        BaseExceptionRS model = new BaseExceptionRS();
+        model.setCode(code.getCode());
+        model.setMessage(code.getMessage());
+
+        return Mono.just(
+            ResponseEntity.status(code.getStatus())
+                .body(model)
+        );
+    }
+
+    /**
+     * 예상치 못한 모든 예외 처리
+     * @param e exception
+     * @return
+     */
     @ExceptionHandler(Exception.class)
     public Mono<ResponseEntity<BaseExceptionRS>> handleAllException(Exception e) {
         log.error("Exception Class :: {}, Mesaage :: {}", e.getClass(), e.getMessage());

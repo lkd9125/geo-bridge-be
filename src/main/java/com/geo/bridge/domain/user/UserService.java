@@ -34,5 +34,14 @@ public class UserService {
         return userMono.flatMap(userRepository::save)
             .then();
     }
+    
+    /**
+     * 유저조회
+     * @param username 유저 아이디
+     * @return
+     */
+    public Mono<UserDTO> getUserByUsername(String username){
+        return userRepository.findByUsername(username);
+    }
 
 }

@@ -1,4 +1,4 @@
-package com.geo.bridge.global.security.authentication;
+package com.geo.bridge.global.security.handler;
 
 import java.nio.charset.StandardCharsets;
 
