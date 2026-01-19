@@ -120,23 +120,18 @@ public class TokenProvider implements InitializingBean{
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-            
             log.info("잘못된 JWT 서명입니다.");
             throw new BaseException(ExceptionCode.INVALID_JWT_SIGN);
         } catch (ExpiredJwtException e) {
-            
             log.info("만료된 JWT 토큰입니다.");
             throw new BaseException(ExceptionCode.EXPRIED_JWT);
         } catch (UnsupportedJwtException e) {
-            
             log.info("지원되지 않는 JWT 토큰입니다.");
             throw new BaseException(ExceptionCode.UNSUPPORTED_JWT);
         } catch (IllegalArgumentException e) {
-            
             log.info("JWT 토큰이 잘못되었습니다.");
             throw new BaseException(ExceptionCode.ERROR_JWT);
         } catch (NullPointerException e){
-
             log.info("토큰이 헤더에 없습니다.");
             throw new BaseException(ExceptionCode.NOT_HEADER_JWT);
         }
