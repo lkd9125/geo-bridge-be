@@ -25,7 +25,7 @@ public class AuthenticationWebLoginFailureHandler implements ServerAuthenticatio
         ServerWebExchange exchange = webFilterExchange.getExchange();
 
         ServerHttpResponse response = exchange.getResponse();
-        response.setStatusCode(HttpStatus.OK);
+        response.setStatusCode(HttpStatus.BAD_REQUEST);
         response.getHeaders().set(HttpHeaders.CONTENT_TYPE, "application/json; charset=UTF-8");
 
         ExceptionCode code = ExceptionCode.LOGIN_FAIL;
