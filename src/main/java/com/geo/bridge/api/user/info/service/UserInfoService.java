@@ -29,7 +29,9 @@ public class UserInfoService {
         return mono.flatMap(rq -> 
                 userService.getUserByUsername(rq.getUsername())
                     // 1. 유저가 존재하면(중복이면) 에러 발생
-                    .flatMap(existingUser -> Mono.<CreateUserRQ>error(new BaseException(ExceptionCode.DUPLICATION_INVALID, "아이디 중복 ")))
+                    .flatMap(existingUser -> {
+                        return Mono.<CreateUserRQ>error(new BaseException(ExceptionCode.DUPLICATION_INVALID, "아이디 중복 "));
+                    })
                     // 2. 유저가 없으면(Empty Mono면) 아래 로직 실행
                     .switchIfEmpty(Mono.just(rq)) 
             )

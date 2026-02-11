@@ -1,6 +1,9 @@
 package com.geo.bridge.global.security.handler;
 
+import java.nio.charset.StandardCharsets;
+
 import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpResponse;
@@ -23,7 +26,7 @@ public class AuthenticationWebLoginFailureHandler implements ServerAuthenticatio
 
         ServerHttpResponse response = exchange.getResponse();
         response.setStatusCode(HttpStatus.OK);
-        response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
+        response.getHeaders().set(HttpHeaders.CONTENT_TYPE, "application/json; charset=UTF-8");
 
         ExceptionCode code = ExceptionCode.LOGIN_FAIL;
 
@@ -34,7 +37,7 @@ public class AuthenticationWebLoginFailureHandler implements ServerAuthenticatio
 
         String jsonBody = JsonUtils.toJson(exceptionRS);
 
-        DataBuffer buffer = response.bufferFactory().wrap(jsonBody.getBytes());
+        DataBuffer buffer = response.bufferFactory().wrap(jsonBody.getBytes(StandardCharsets.UTF_8));
 
         return response.writeWith(Mono.just(buffer));
     }

@@ -21,6 +21,6 @@ public class SearchHostDTO {
 
     private Long idx;
 
-    private Long userIdx;
+    private String userId;
     
 }

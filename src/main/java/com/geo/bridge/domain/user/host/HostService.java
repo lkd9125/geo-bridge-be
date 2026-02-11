@@ -11,6 +11,8 @@ import com.geo.bridge.domain.user.host.dto.entity.HostDTO;
 import com.geo.bridge.domain.user.host.repository.HostRepository;
 import com.geo.bridge.global.base.BasePageRQ;
 import com.geo.bridge.global.base.BasePageRS;
+import com.geo.bridge.global.exception.BaseException;
+import com.geo.bridge.global.exception.ExceptionCode;
 import com.geo.bridge.global.utils.JsonUtils;
 
 import lombok.RequiredArgsConstructor;
@@ -42,6 +44,13 @@ public class HostService {
         return mono
             .doOnNext(dto -> log.info(JsonUtils.toJson(dto)))
             .flatMap(emitterClientRepository::save)
+            .onErrorResume(throwable -> {
+                log.warn("createClientHost error :: {}", throwable.getMessage());
+                if (throwable instanceof BaseException baseEx) {
+                    return Mono.error(baseEx);
+                }
+                return Mono.error(new BaseException(ExceptionCode.SERVER_INVALID, throwable.getMessage(), throwable));
+            })
             .then();
     }
 

@@ -31,7 +31,7 @@ public class UserService {
      * @return
      */
     public Mono<Void> createUser(Mono<UserDTO> userMono){
-        return userMono.flatMap(userRepository::save)
+        return userMono.flatMap(user -> userRepository.save(user))
             .then();
     }
     
@@ -41,7 +41,7 @@ public class UserService {
      * @return
      */
     public Mono<UserDTO> getUserByUsername(String username){
-        return userRepository.findByUsername(username);
+        return userRepository.findById(username);
     }
 
 }

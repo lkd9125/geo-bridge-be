@@ -1,8 +1,6 @@
 package com.geo.bridge.api.user.host.service;
 
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.geo.bridge.api.user.host.model.CreateUserHostRQ;
 import com.geo.bridge.api.user.host.model.SearchUserHostRQ;
@@ -44,12 +42,10 @@ public class UserHostService {
      * @param mono Web RQ Model
      * @return
      */
-    @Transactional
     public Mono<Void> createEmitterClientInfo(Mono<CreateUserHostRQ> mono){
         return mono
             .flatMap(CreateUserHostRQ::toDto)
-            .flatMap(dto -> clientHostService.createClientHost(Mono.just(dto)))
-            .then();
+            .flatMap(dto -> clientHostService.createClientHost(Mono.just(dto)));
     }
 
     /**
@@ -67,7 +63,7 @@ public class UserHostService {
         return SecurityHelper.securityHolder()
             .flatMap(user -> userService.getUserByUsername(user.getUsername()))
             .flatMap(user -> {
-                searchDTO.setUserIdx(user.getIdx());
+                searchDTO.setUserId(user.getUsername());
                 return clientHostService.getAllClientHost(searchDTO, page);
             })
             .flatMap(pageRS ->

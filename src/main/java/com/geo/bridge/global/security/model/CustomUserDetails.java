@@ -14,8 +14,6 @@ import lombok.Data;
 @Data
 public class CustomUserDetails implements UserDetails{
 
-    private Long idx;
-
     private String username;
 
     private String password;
@@ -27,7 +25,6 @@ public class CustomUserDetails implements UserDetails{
 
     public static UserDetails fromDto(UserDTO user){
         CustomUserDetails userDetails = new CustomUserDetails();
-        userDetails.setIdx(user.getIdx());
         userDetails.setUsername(user.getUsername());
         userDetails.setPassword(user.getPassword());
 

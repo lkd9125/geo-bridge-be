@@ -1,15 +1,16 @@
 package com.geo.bridge.global.security;
 
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+
+import com.geo.bridge.global.security.model.CustomUserDetails;
 
 import reactor.core.publisher.Mono;
 
 public class SecurityHelper {
 
-    public static Mono<UserDetails> securityHolder(){
+    public static Mono<CustomUserDetails> securityHolder(){
         return ReactiveSecurityContextHolder.getContext()
-            .map(context -> (UserDetails) context.getAuthentication().getPrincipal());
+            .map(context -> (CustomUserDetails) context.getAuthentication().getPrincipal());
     }
 
 }

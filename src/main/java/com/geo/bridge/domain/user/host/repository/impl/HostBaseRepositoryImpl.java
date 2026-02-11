@@ -56,8 +56,8 @@ public class HostBaseRepositoryImpl implements HostBaseRepository{
             criteria = criteria.and("IDX").is(searchDTO.getIdx());
         }
 
-        if(searchDTO.getUserIdx() != null){
-            criteria = criteria.and("CREATE_AT").is(searchDTO.getUserIdx());
+        if(searchDTO.getUserId() != null){
+            criteria = criteria.and("CREATE_AT").is(searchDTO.getUserId());
         }
 
         return criteria;

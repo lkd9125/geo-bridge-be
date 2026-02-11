@@ -17,6 +17,7 @@ import org.springframework.web.cors.reactive.CorsConfigurationSource;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
 import com.geo.bridge.domain.user.UserService;
+import com.geo.bridge.domain.user.repository.UserRepository;
 import com.geo.bridge.global.security.authentication.AuthenticationWebLoginConverter;
 import com.geo.bridge.global.security.authentication.AuthenticationWebLoginManager;
 import com.geo.bridge.global.security.authorization.AuthorizationJwtFilter;
@@ -31,6 +32,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final UserRepository userRepository;
 
     private final UserService userService;
     private final TokenProvider tokenProvider;
@@ -55,7 +58,7 @@ public class SecurityConfig {
             .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.mode(Mode.SAMEORIGIN)))
             .formLogin(formLogin -> formLogin.disable())
             .httpBasic(httpBasic -> httpBasic.disable())
-            .addFilterBefore(new AuthorizationJwtFilter(tokenProvider), SecurityWebFiltersOrder.AUTHENTICATION) // JWT 인가
+            .addFilterBefore(new AuthorizationJwtFilter(tokenProvider, userRepository), SecurityWebFiltersOrder.AUTHENTICATION) // JWT 인가
             .addFilterAt(this.authenticationWebFilter(), SecurityWebFiltersOrder.AUTHENTICATION) 
             .authorizeExchange(auth -> 
                 auth.pathMatchers(this.PERMIT_URL).permitAll()
