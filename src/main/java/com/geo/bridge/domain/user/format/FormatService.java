@@ -1,9 +1,16 @@
 package com.geo.bridge.domain.user.format;
 
+import java.util.List;
+
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.geo.bridge.domain.user.format.dto.SearchFormatDTO;
 import com.geo.bridge.domain.user.format.dto.entity.FormatDTO;
 import com.geo.bridge.domain.user.format.repository.FormatRepository;
+import com.geo.bridge.global.base.BasePageRQ;
+import com.geo.bridge.global.base.BasePageRS;
 import com.geo.bridge.global.utils.JsonUtils;
 
 import lombok.RequiredArgsConstructor;
@@ -34,6 +41,27 @@ public class FormatService {
             .doOnNext(dto -> log.info(JsonUtils.toJson(dto)))
             .flatMap(formatRepository::save)
             .then();
+    }
+
+    public Mono<BasePageRS<FormatDTO>> getAllFormat(SearchFormatDTO searchFormatDTO, BasePageRQ page){
+        Pageable pageable = PageRequest.of(page.getPage() - 1, page.getSize());
+
+        Mono<List<FormatDTO>> listMono = formatRepository.findBySearch(searchFormatDTO, pageable).collectList();
+        Mono<Long> cntMono = formatRepository.countBySearch(searchFormatDTO);
+        
+        return Mono.zip(listMono, cntMono)
+            .map(tuple -> {
+                List<FormatDTO> list = tuple.getT1();
+                Long cnt = tuple.getT2();
+
+                return BasePageRS.of(
+                    list, 
+                    page.getPage(), 
+                    page.getSize(), 
+                    page.getRange(), 
+                    cnt.intValue()
+                );
+            });
     }
 
 }

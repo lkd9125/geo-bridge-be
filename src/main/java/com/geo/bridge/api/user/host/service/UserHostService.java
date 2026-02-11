@@ -42,7 +42,7 @@ public class UserHostService {
      * @param mono Web RQ Model
      * @return
      */
-    public Mono<Void> createEmitterClientInfo(Mono<CreateUserHostRQ> mono){
+    public Mono<Void> createClientHost(Mono<CreateUserHostRQ> mono){
         return mono
             .flatMap(CreateUserHostRQ::toDto)
             .flatMap(dto -> clientHostService.createClientHost(Mono.just(dto)));

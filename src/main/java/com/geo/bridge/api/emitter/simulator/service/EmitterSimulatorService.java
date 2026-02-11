@@ -1,5 +1,6 @@
 package com.geo.bridge.api.emitter.simulator.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.locationtech.jts.geom.Coordinate;
@@ -63,12 +64,13 @@ public class EmitterSimulatorService {
                 dto.setTopic(emitterSimulatrRQ.getTopic());
                 dto.setType(emitterSimulatrRQ.getType());
 
-                List<Coordinate> rouCoordinates = emitterSimulatrRQ.getPointList().stream()
-                    .map(BasePointDTO::toCoordinate)
-                    .toList();
+                List<Coordinate> routeCoordinates = new ArrayList<>();
+                for(BasePointDTO point : emitterSimulatrRQ.getPointList()){
+                    routeCoordinates.add(point.toCoordinate());
+                }
 
                 Mono<EmitterClient> client = simulatorService.createSimulatorClient(dto);
-                Mono<List<Coordinate>> coordinates = simulatorService.createSimulatorCoordinates(rouCoordinates, emitterSimulatrRQ.getSpeed());
+                Mono<List<Coordinate>> coordinates = simulatorService.createSimulatorCoordinates(routeCoordinates, emitterSimulatrRQ.getSpeed());
 
                 return Mono.zip(client, coordinates, Mono.just(emitterSimulatrRQ.getFormat()), Mono.just(emitterSimulatrRQ.getCycle()), SecurityHelper.securityHolder());
             })

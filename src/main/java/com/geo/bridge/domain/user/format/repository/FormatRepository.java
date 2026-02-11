@@ -11,6 +11,6 @@ import com.geo.bridge.domain.user.format.dto.entity.FormatDTO;
  *  <li></li>
  * </ul>
  */
-public interface FormatRepository extends R2dbcRepository<FormatDTO, Long>{
+public interface FormatRepository extends R2dbcRepository<FormatDTO, Long>, FormatBaseRepository{
     
 }

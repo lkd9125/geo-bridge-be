@@ -42,8 +42,8 @@ public class UserHostController {
      * @return
      */
     @PostMapping
-    public Mono<Void> createEmitterClientInfo(@Valid @RequestBody Mono<CreateUserHostRQ> rq){
-        return emitterClientInfoService.createEmitterClientInfo(rq);
+    public Mono<Void> createClientHost(@Valid @RequestBody Mono<CreateUserHostRQ> rq){
+        return emitterClientInfoService.createClientHost(rq);
     }
 
     /**

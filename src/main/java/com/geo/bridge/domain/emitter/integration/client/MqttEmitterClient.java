@@ -1,18 +1,13 @@
 package com.geo.bridge.domain.emitter.integration.client;
 
-import java.util.Arrays;
 import java.util.UUID;
 
-import org.eclipse.paho.mqttv5.client.IMqttAsyncClient;
 import org.eclipse.paho.mqttv5.client.MqttClient;
 import org.eclipse.paho.mqttv5.client.MqttConnectionOptions;
 import org.eclipse.paho.mqttv5.client.persist.MemoryPersistence;
 import org.eclipse.paho.mqttv5.common.MqttException;
-import org.locationtech.jts.geom.Coordinate;
-import org.springframework.integration.mqtt.core.Mqttv5ClientManager;
 
 import com.geo.bridge.global.config.IOScheduler;
-import com.geo.bridge.global.utils.JsonUtils;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -53,12 +48,29 @@ public class MqttEmitterClient implements EmitterClient{
      */
     public MqttEmitterClient(String name, String host, String topic, String username, String password){
         this.name = name;
-        this.host = host;
+        this.host = ensureProtocol(host);
         this.topic = topic;
         this.username = username;
         this.password = password;
 
         this.connect();
+    }
+
+    /**
+     * host에 프로토콜이 없으면 tcp://를 자동으로 추가
+     * @param host 호스트 주소
+     * @return 프로토콜이 포함된 호스트 주소
+     */
+    private String ensureProtocol(String host) {
+        if (host == null || host.isBlank()) {
+            return host;
+        }
+        // 이미 프로토콜이 있으면 그대로 반환 (tcp://, ssl://, ws:// 등)
+        if (host.contains("tcp://")) {
+            return host;
+        }
+        // 프로토콜이 없으면 tcp:// 추가
+        return "tcp://" + host;
     }
 
     @Override
