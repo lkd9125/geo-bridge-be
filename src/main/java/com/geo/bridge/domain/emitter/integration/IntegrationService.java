@@ -1,5 +1,7 @@
 package com.geo.bridge.domain.emitter.integration;
 
+import java.util.Map;
+
 import org.springframework.stereotype.Service;
 
 import com.geo.bridge.domain.emitter.integration.client.EmitterClient;
@@ -32,11 +34,12 @@ public class IntegrationService {
      * @param username (옵션) 연결 아이디
      * @param password (옵션) 연결 암호
      * @param type 클라이언트 타입
+     * @param parameter 추가 파라미터
      * @return
      */
-    public Mono<EmitterClient> createIntegrationEmitterClient(String name, String host, String topic, String username, String password, EmitterType type){
+    public Mono<EmitterClient> createIntegrationEmitterClient(String name, String host, String topic, String username, String password, EmitterType type, Map<String, String> parameter){
         return switch(type){
-            case MQTT -> Mono.just(new MqttEmitterClient(name, host, topic, username, password));
+            case MQTT -> Mono.just(new MqttEmitterClient(name, host, topic, username, password, parameter));
             default -> throw new BaseException();
         };
     }

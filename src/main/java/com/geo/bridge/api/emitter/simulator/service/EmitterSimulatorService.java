@@ -63,6 +63,7 @@ public class EmitterSimulatorService {
                 dto.setPassword(emitterSimulatrRQ.getPassword());
                 dto.setTopic(emitterSimulatrRQ.getTopic());
                 dto.setType(emitterSimulatrRQ.getType());
+                dto.setParameter(emitterSimulatrRQ.getParameter());
 
                 List<Coordinate> routeCoordinates = new ArrayList<>();
                 for(BasePointDTO point : emitterSimulatrRQ.getPointList()){

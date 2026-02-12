@@ -1,5 +1,6 @@
 package com.geo.bridge.domain.emitter.integration.client;
 
+import java.util.Map;
 import java.util.UUID;
 
 import org.eclipse.paho.mqttv5.client.MqttClient;
@@ -37,6 +38,7 @@ public class MqttEmitterClient implements EmitterClient{
     private String username;
     private String password;
     private MqttClient mqttClient;
+    private Map<String, String> parameter;
     
     /**
      * MQTT 클라이언트 생성과 동시에 연결
@@ -46,12 +48,13 @@ public class MqttEmitterClient implements EmitterClient{
      * @param username
      * @param password
      */
-    public MqttEmitterClient(String name, String host, String topic, String username, String password){
+    public MqttEmitterClient(String name, String host, String topic, String username, String password, Map<String, String> parameter){
         this.name = name;
         this.host = ensureProtocol(host);
         this.topic = topic;
         this.username = username;
         this.password = password;
+        this.parameter = parameter;
 
         this.connect();
     }
@@ -79,6 +82,13 @@ public class MqttEmitterClient implements EmitterClient{
         try{
             MqttConnectionOptions opts = new MqttConnectionOptions();
             opts.setServerURIs(new String[]{this.host});
+            // Username과 Password 설정
+            if (this.username != null && !this.username.isBlank()) {
+                opts.setUserName(this.username);
+            }
+            if (this.password != null && !this.password.isBlank()) {
+                opts.setPassword(this.password.getBytes());
+            }
 
             MqttClient mqttClient = new MqttClient(this.host, clientId, new MemoryPersistence());
             mqttClient.connect(opts);

@@ -1,6 +1,7 @@
 package com.geo.bridge.api.emitter.simulator.model;
 
 import java.util.List;
+import java.util.Map;
 
 import com.geo.bridge.domain.emitter.integration.model.EmitterType;
 import com.geo.bridge.global.base.BasePointDTO;
@@ -57,6 +58,8 @@ public class EmitterSimulatorRQ {
 
     @NotNull
     private String format;
+
+    private Map<String, String> parameter;
 
     public void setSpeedUnit(String unit){
         this.speedUnit = SpeedUnit.fromUnit(unit);

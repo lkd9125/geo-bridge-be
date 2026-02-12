@@ -115,7 +115,7 @@ public class SimulatorService {
      * @return 생성된 Emitter Client
      */
     public Mono<EmitterClient> createSimulatorClient(CreateSimulatorClientDTO dto){
-        return integrationService.createIntegrationEmitterClient(dto.getName(), dto.getHost(), dto.getTopic(), dto.getUsername(), dto.getPassword(), dto.getType());
+        return integrationService.createIntegrationEmitterClient(dto.getName(), dto.getHost(), dto.getTopic(), dto.getUsername(), dto.getPassword(), dto.getType(), dto.getParameter());
     }
 
 

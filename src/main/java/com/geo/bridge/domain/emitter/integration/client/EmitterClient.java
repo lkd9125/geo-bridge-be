@@ -1,5 +1,7 @@
 package com.geo.bridge.domain.emitter.integration.client;
 
+import java.util.Map;
+
 import reactor.core.publisher.Mono;
 
 /**
@@ -13,6 +15,7 @@ import reactor.core.publisher.Mono;
  *  <li>{@link #disconnect()} client 연결 해제</li>
  *  <li>{@link #isConnected()} client 연결 확인</li>
  *  <li>{@link #send(String)} 데이터 전송</li>
+ *  <li>{@link #getParameter()} 추가 파라미터</li>
  * </ul>
  */
 public interface EmitterClient {
@@ -23,4 +26,5 @@ public interface EmitterClient {
     void disconnect();
     Boolean isConnected();
     Mono<Void> send(String sendData);
+    Map<String, String> getParameter();
 }

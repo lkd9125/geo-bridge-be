@@ -61,7 +61,7 @@ public class EmitterClientManager {
 
     private int cycle;
 
-    private Map<String, Object> baseParameters;
+    private Map<String, String> baseParameters;
 
     /**
      * HOST에 전송 시작
@@ -76,11 +76,10 @@ public class EmitterClientManager {
             .delayElements(Duration.ofSeconds(1L))
             .map(cooridnate -> {
                 // 파라미터 세팅
-                Map<String, Object> parameters = new HashMap<>();
-                parameters.put("lat", cooridnate.getY());
-                parameters.put("lon", cooridnate.getX());
+                baseParameters.put("lat", String.valueOf(cooridnate.getY()));
+                baseParameters.put("lon", String.valueOf(cooridnate.getX()));
 
-                return this.bindFormat(parameters);
+                return this.bindFormat(baseParameters);
             })
             .flatMap(sendData -> client.send(sendData))
             .doFinally(onFinally -> {
@@ -115,7 +114,7 @@ public class EmitterClientManager {
      * @param lon 경도
      * @return binding 한 전송 포맷
      */
-    private String bindFormat(Map<String, Object> parameters){
+    private String bindFormat(Map<String, String> parameters){
         return fastBinder.bind(parameters);
     }
 
@@ -172,14 +171,14 @@ public class EmitterClientManager {
         }
 
         // 실제 데이터 바인딩 (매우 빠름)
-        public String bind(Map<String, Object> data) {
+        public String bind(Map<String, String> data) {
             // StringBuilder 크기를 미리 지정하여 내부 배열 Resizing 오버헤드 방지
             StringBuilder sb = new StringBuilder(estimatedLength + 32);
 
             for (Segment segment : segments) {
                 if (segment.isVariable) {
                     // 변수면 맵에서 값을 찾아 넣음 (null이면 빈 문자열 처리 등 정책 결정)
-                    Object val = data.get(segment.content);
+                    String val = data.get(segment.content);
                     sb.append(val != null ? val : ""); 
                 } else {
                     // 고정 텍스트면 그냥 넣음

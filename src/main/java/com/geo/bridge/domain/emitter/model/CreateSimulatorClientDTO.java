@@ -1,5 +1,7 @@
 package com.geo.bridge.domain.emitter.model;
 
+import java.util.Map;
+
 import com.geo.bridge.domain.emitter.integration.model.EmitterType;
 
 import lombok.Data;
@@ -15,6 +17,7 @@ import lombok.Data;
  *      <li>{@link #username} : (옵션) 아이디</li>
  *      <li>{@link #password} : (옵션) 비밀번호</li>
  *      <li>{@link #type} : 클라이언트 타입</li>
+ *      <li>{@link #parameter} : 추가 파라미터(포맷팅)</li>
  * </ul>
  */
 @Data
@@ -26,5 +29,6 @@ public class CreateSimulatorClientDTO {
     private String username;
     private String password;
     private EmitterType type;
+    private Map<String, String> parameter;
 
 }

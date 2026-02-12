@@ -50,6 +50,7 @@ public class EmitterContext {
         manager.setFormat(format);
         manager.setCooridnates(cooridates);
         manager.setCycle(cycle);
+        manager.setBaseParameters(client.getParameter());
 
         Map<String, EmitterClientManager> clientMap = emitterManagerMap.get(custNo);
         if(clientMap == null){
