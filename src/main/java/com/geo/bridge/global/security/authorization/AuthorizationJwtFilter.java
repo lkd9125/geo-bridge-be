@@ -5,6 +5,7 @@ import java.nio.charset.StandardCharsets;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
@@ -47,14 +48,15 @@ public class AuthorizationJwtFilter implements WebFilter{
                     );
             }
         } catch (Exception e) {
-            ServerHttpResponse response = exchange.getResponse();
-            response.setStatusCode(HttpStatus.OK);
-            response.getHeaders().set(HttpHeaders.CONTENT_TYPE, "application/json; charset=UTF-8");
-
             ExceptionCode code = ExceptionCode.ERROR_JWT;
             if (e instanceof BaseException baseException) {
                 code = baseException.getErrorCode();
             }
+
+            ServerHttpResponse response = exchange.getResponse();
+            response.setStatusCode(HttpStatusCode.valueOf(code.getStatus()));
+            response.getHeaders().set(HttpHeaders.CONTENT_TYPE, "application/json; charset=UTF-8");
+
 
             BaseExceptionRS exceptionRS = new BaseExceptionRS();
             exceptionRS.setCode(code.getCode());
