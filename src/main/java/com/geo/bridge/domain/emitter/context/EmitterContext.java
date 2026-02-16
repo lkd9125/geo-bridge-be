@@ -52,6 +52,7 @@ public class EmitterContext {
         manager.setCooridnates(cooridates);
         manager.setCycle(cycle);
         manager.setBaseParameters(client.getParameter());
+        manager.setCustNo(custNo);
 
         Map<String, EmitterClientManager> clientMap = emitterManagerMap.get(custNo);
         if(clientMap == null){
@@ -78,7 +79,7 @@ public class EmitterContext {
 
         EmitterClientManager emitterManager = clientMap.get(uuid);
         if(emitterManager != null && emitterManager.getStatus() != EmitterClientStatus.PLAYING){
-            emitterManager.excute(SseEmiterContext.getSseEmiter(custNo));
+            emitterManager.excute();
         }
 
         return uuid;

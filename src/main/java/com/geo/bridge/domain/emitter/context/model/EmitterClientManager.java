@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 import org.locationtech.jts.geom.Coordinate;
 import org.springframework.http.codec.ServerSentEvent;
 
+import com.geo.bridge.domain.emitter.context.SseEmiterContext;
 import com.geo.bridge.domain.emitter.integration.client.EmitterClient;
 import com.geo.bridge.global.base.BasePointDTO;
 import com.geo.bridge.global.utils.JsonUtils;
@@ -70,27 +71,32 @@ public class EmitterClientManager {
 
     private Map<String, String> baseParameters;
 
-    private Sinks.Many<String> sseEmiter;
+    private Integer nowSeconds = 0;
+
+    private String custNo;
 
     /**
      * HOST에 전송 시작
      */
-    public void excute(Sinks.Many<String> sseEmiter){
+    public void excute(){
         stop();
-
-        this.sseEmiter = sseEmiter;
 
         log.info("Client Excute RunningTime :: {} Second", cooridnates.size() * cycle);
         this.status = EmitterClientStatus.PLAYING;
         this.disposable = Flux.fromIterable(cooridnates)
-            .repeat(this.cycle - 1) // [핵심] 1회 실행 후 (cycle-1)번 더 반복 -> 총 cycle번 실행
+            .repeat(this.cycle - 1) // 1회 실행 후 (cycle-1)번 더 반복 -> 총 cycle번 실행
             .delayElements(Duration.ofSeconds(1L))
             .doOnNext(cooridnate -> {
-                BasePointDTO point = new BasePointDTO();
-                point.setLat(cooridnate.getLat());
-                point.setLon(cooridnate.getLon());
+                // excute 이후 지난 시간 측정
+                this.nowSeconds += 1;
+                // sse emitter monitoring용 전송
+                EmitterBody emitterBody = new EmitterBody();
+                emitterBody.setUuid(this.uuid);
+                emitterBody.setLat(cooridnate.getLat());
+                emitterBody.setLon(cooridnate.getLon());
+                emitterBody.setHeading(cooridnate.getHeading());
 
-                sseEmiter.tryEmitNext(JsonUtils.toJson(point));
+                SseEmiterContext.getSseEmiter(custNo).tryEmitNext(JsonUtils.toJson(emitterBody));
             })
             .map(cooridnate -> {
                 // 파라미터 세팅
@@ -208,6 +214,14 @@ public class EmitterClientManager {
             }
             return sb.toString();
         }
+    }
+
+    @Data
+    private static class EmitterBody{
+        private String uuid;
+        private Double lat;
+        private Double lon;
+        private Double heading;
     }
 
 }

@@ -55,12 +55,14 @@ public class EmitterSimulatorController {
     }
 
     /**
-     * 시뮬레이션 모니터링
+     * 시뮬레이션 좌표 모니터링
      * @return
      */
-    @GetMapping(value = "/monitoring", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @GetMapping(value = "/monitoring/coords", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<String> monitoring(){
         return emitterSimulatorService.monitoring();
     }
+
+    
 
 }

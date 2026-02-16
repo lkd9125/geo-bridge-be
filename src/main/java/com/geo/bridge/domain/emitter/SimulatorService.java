@@ -92,10 +92,12 @@ public class SimulatorService {
                     
                     Coordinate newPoint = new Coordinate(destPoint.getX(), destPoint.getY());
 
-                    // heading: currentPos -> newPoint 방향 (0~360도)
-                    double dx = newPoint.getX() - currentPos.x;
-                    double dy = newPoint.getY() - currentPos.y;
-                    double heading = (Math.toDegrees(Math.atan2(dy, dx)) + 360) % 360;
+                    double dx = newPoint.getX() - currentPos.x; // 경도 차이
+                    double dy = newPoint.getY() - currentPos.y; // 위도 차이
+
+                    double heading = Math.toDegrees(Math.atan2(dx, dy));
+
+                    heading = (heading + 360) % 360;
 
                     BasePointDTO point = new BasePointDTO();
                     point.setLon(newPoint.getX());
