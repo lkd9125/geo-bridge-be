@@ -14,6 +14,7 @@ import com.geo.bridge.domain.emitter.integration.client.EmitterClient;
 import com.geo.bridge.domain.emitter.model.CreateSimulatorClientDTO;
 import com.geo.bridge.global.base.BasePointDTO;
 import com.geo.bridge.global.security.SecurityHelper;
+import com.geo.bridge.global.security.model.CustomUserDetails;
 import com.geo.bridge.global.utils.SpeedUtils;
 import com.geo.bridge.global.utils.SpeedUtils.SpeedUnit;
 
@@ -23,6 +24,11 @@ import reactor.core.publisher.Mono;
 
 /**
  * Emitter Simulator Service
+ * <p>기능</p>
+ * <ul>
+ *     <li>{@link #startEmitterSimulator(Mono)} 시뮬레이션 시작</li>
+ *     <li>{@link #stopEmitterSmiulator(String)} 시뮬레이션 정지</li>
+ * </ul>
  */
 @Service
 @Slf4j
@@ -40,7 +46,7 @@ public class EmitterSimulatorService {
      * @param rq
      * @return UUID전송
      */
-    public Mono<String> emitterSimulator(Mono<EmitterSimulatorRQ> rq) {
+    public Mono<String> startEmitterSimulator(Mono<EmitterSimulatorRQ> rq) {
         return rq
             // 1. 속도값 조정
             .map(emitterSimulatrRQ -> {
@@ -88,6 +94,17 @@ public class EmitterSimulatorService {
 
                 return uuid;
             });
+    }
+
+    /**
+     * 시뮬레이션 정지
+     * @param uuid Emitter Control UUID
+     * @return
+     */
+    public Mono<Void> stopEmitterSmiulator(String uuid){
+        return SecurityHelper.securityHolder()
+            .doOnNext(user -> EmitterContext.stop(user.getUsername(), uuid))
+            .then();
     }
 
 

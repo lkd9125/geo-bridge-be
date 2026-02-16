@@ -101,4 +101,19 @@ public class EmitterContext {
             log.info("ALREADY REMOVE '{}'", uuid);
         }
     }
+
+    /**
+     * Emitter 정지
+     * @param custNo
+     * @param uuid
+     */
+    public static void stop(String custNo, String uuid){
+        Map<String, EmitterClientManager> clientMap = emitterManagerMap.get(custNo);
+        if(clientMap == null){
+            throw new BaseException(ExceptionCode.PARAMETER_INVALID);
+        }
+
+        EmitterClientManager emitterManager = clientMap.get(uuid);
+        emitterManager.stop();
+    }
 }

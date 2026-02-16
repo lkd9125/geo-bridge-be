@@ -118,5 +118,4 @@ public class SimulatorService {
         return integrationService.createIntegrationEmitterClient(dto.getName(), dto.getHost(), dto.getTopic(), dto.getUsername(), dto.getPassword(), dto.getType(), dto.getParameter());
     }
 
-
 }

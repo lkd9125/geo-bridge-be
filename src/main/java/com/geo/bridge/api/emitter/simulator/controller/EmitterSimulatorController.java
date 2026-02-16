@@ -1,8 +1,10 @@
 package com.geo.bridge.api.emitter.simulator.controller;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.geo.bridge.api.emitter.simulator.model.EmitterSimulatorRQ;
@@ -33,8 +35,13 @@ public class EmitterSimulatorController {
      * @return 실행 후 나오는 UUID 전송
      */
     @PostMapping
-    public Mono<String> emitterSimulator(@RequestBody Mono<EmitterSimulatorRQ> rq){
-        return emitterSimulatorService.emitterSimulator(rq);
+    public Mono<String> startEmitterSimulator(@RequestBody Mono<EmitterSimulatorRQ> rq){
+        return emitterSimulatorService.startEmitterSimulator(rq);
+    }
+
+    @DeleteMapping
+    public Mono<Void> startEmitterSimulator(@RequestParam("uuid") String uuid){
+        return emitterSimulatorService.stopEmitterSmiulator(uuid);
     }
 
 }
