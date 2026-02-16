@@ -79,14 +79,14 @@ public class EmitterSimulatorService {
                 }
 
                 Mono<EmitterClient> client = simulatorService.createSimulatorClient(dto);
-                Mono<List<Coordinate>> coordinates = simulatorService.createSimulatorCoordinates(routeCoordinates, emitterSimulatrRQ.getSpeed());
+                Mono<List<BasePointDTO>> coordinates = simulatorService.createSimulatorCoordinates(routeCoordinates, emitterSimulatrRQ.getSpeed());
 
                 return Mono.zip(client, coordinates, Mono.just(emitterSimulatrRQ.getFormat()), Mono.just(emitterSimulatrRQ.getCycle()), SecurityHelper.securityHolder());
             })
             // 3. client context 등록 및 시작
             .map(tuple -> {
                 EmitterClient client = tuple.getT1();
-                List<Coordinate> coordinates = tuple.getT2();
+                List<BasePointDTO> coordinates = tuple.getT2();
                 String format = tuple.getT3();
                 Integer cycle = tuple.getT4();
                 UserDetails userDetails = tuple.getT5();

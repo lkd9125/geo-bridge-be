@@ -11,6 +11,7 @@ import lombok.Data;
  * <ul>
  *  <li>{@link #lat} 위도</li>
  *  <li>{@link #lon} 경도</li>
+ *  <li>{@link #heading} 헤딩방향</li>
  * </ul>
  * 
  * <p>기능</p>
@@ -24,6 +25,8 @@ public class BasePointDTO {
     private Double lat;
 
     private Double lon;
+
+    private Double heading;
 
     /**
      * Coordinate 변환

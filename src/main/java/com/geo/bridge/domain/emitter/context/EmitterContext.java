@@ -10,6 +10,7 @@ import org.locationtech.jts.geom.Coordinate;
 import com.geo.bridge.domain.emitter.context.model.EmitterClientManager;
 import com.geo.bridge.domain.emitter.context.model.EmitterClientStatus;
 import com.geo.bridge.domain.emitter.integration.client.EmitterClient;
+import com.geo.bridge.global.base.BasePointDTO;
 import com.geo.bridge.global.exception.BaseException;
 import com.geo.bridge.global.exception.ExceptionCode;
 
@@ -40,7 +41,7 @@ public class EmitterContext {
      * @param cycle 반복 횟수
      * @return UUID
      */
-    public static String put(String custNo, EmitterClient client, String format, List<Coordinate> cooridates, int cycle){
+    public static String put(String custNo, EmitterClient client, String format, List<BasePointDTO> cooridates, int cycle){
         if(cycle < 1){
             cycle = 1;
         }

@@ -58,7 +58,7 @@ public class EmitterClientManager {
 
     private EmitterClient client;
 
-    private List<Coordinate> cooridnates;
+    private List<BasePointDTO> cooridnates;
 
     private String format;
 
@@ -87,16 +87,16 @@ public class EmitterClientManager {
             .delayElements(Duration.ofSeconds(1L))
             .doOnNext(cooridnate -> {
                 BasePointDTO point = new BasePointDTO();
-                point.setLat(cooridnate.getY());
-                point.setLon(cooridnate.getX());
-                
+                point.setLat(cooridnate.getLat());
+                point.setLon(cooridnate.getLon());
+
                 sseEmiter.tryEmitNext(JsonUtils.toJson(point));
             })
             .map(cooridnate -> {
                 // 파라미터 세팅
-                baseParameters.put("lat", String.valueOf(cooridnate.getY()));
-                baseParameters.put("lon", String.valueOf(cooridnate.getX()));
-                // baseParameters.put("heading", String.valueOf(cooridnate.getX()));
+                baseParameters.put("lat", String.valueOf(cooridnate.getLat()));
+                baseParameters.put("lon", String.valueOf(cooridnate.getLon()));
+                baseParameters.put("heading", String.valueOf(cooridnate.getHeading()));
 
                 return this.bindFormat(baseParameters);
             })

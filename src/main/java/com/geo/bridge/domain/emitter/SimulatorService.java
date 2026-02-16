@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.geo.bridge.domain.emitter.integration.IntegrationService;
 import com.geo.bridge.domain.emitter.integration.client.EmitterClient;
 import com.geo.bridge.domain.emitter.model.CreateSimulatorClientDTO;
+import com.geo.bridge.global.base.BasePointDTO;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +42,7 @@ public class SimulatorService {
      * @param speed 속도(m/s)
      * @return
      */
-    public Mono<List<Coordinate>> createSimulatorCoordinates(List<Coordinate> routeCoordinates, Double speed){
+    public Mono<List<BasePointDTO>> createSimulatorCoordinates(List<Coordinate> routeCoordinates, Double speed){
         // 첫 좌표와 마지막 좌표가 같지 않으면 첫좌표 추가
         Coordinate startCoord = routeCoordinates.get(0);
         Coordinate endCoord = routeCoordinates.get(routeCoordinates.size() - 1);
@@ -50,14 +51,18 @@ public class SimulatorService {
         }
         
 
-        List<Coordinate> timeStepCoordinates = new ArrayList<>();
+        List<BasePointDTO> timeStepCoordinates = new ArrayList<>();
         
         if (routeCoordinates == null || routeCoordinates.size() < 2) {
             return Mono.just(timeStepCoordinates);
         }
 
         // 시작점 추가 (0초 지점)
-        timeStepCoordinates.add(routeCoordinates.get(0));
+        BasePointDTO startPoint = new BasePointDTO();
+        startPoint.setLat(routeCoordinates.get(0).getY());
+        startPoint.setLon(routeCoordinates.get(0).getX());
+
+        timeStepCoordinates.add(startPoint);
 
         // 현재 1초를 채우기 위해 더 가야할 남은 거리
         double remainingDistForSec = speed;
@@ -86,9 +91,19 @@ public class SimulatorService {
                     Point2D destPoint = calc.getDestinationGeographicPoint();
                     
                     Coordinate newPoint = new Coordinate(destPoint.getX(), destPoint.getY());
+
+                    // heading: currentPos -> newPoint 방향 (0~360도)
+                    double dx = newPoint.getX() - currentPos.x;
+                    double dy = newPoint.getY() - currentPos.y;
+                    double heading = (Math.toDegrees(Math.atan2(dy, dx)) + 360) % 360;
+
+                    BasePointDTO point = new BasePointDTO();
+                    point.setLon(newPoint.getX());
+                    point.setLat(newPoint.getY());
+                    point.setHeading(heading);
                     
                     // 결과 리스트에 추가 (1초 경과 지점)
-                    timeStepCoordinates.add(newPoint);
+                    timeStepCoordinates.add(point);
 
                     // 현재 위치를 방금 찍은 점으로 업데이트
                     currentPos = newPoint;
