@@ -10,17 +10,19 @@ import org.springframework.stereotype.Service;
 import com.geo.bridge.api.emitter.simulator.model.EmitterSimulatorRQ;
 import com.geo.bridge.domain.emitter.SimulatorService;
 import com.geo.bridge.domain.emitter.context.EmitterContext;
+import com.geo.bridge.domain.emitter.context.SseEmiterContext;
 import com.geo.bridge.domain.emitter.integration.client.EmitterClient;
 import com.geo.bridge.domain.emitter.model.CreateSimulatorClientDTO;
 import com.geo.bridge.global.base.BasePointDTO;
 import com.geo.bridge.global.security.SecurityHelper;
-import com.geo.bridge.global.security.model.CustomUserDetails;
 import com.geo.bridge.global.utils.SpeedUtils;
 import com.geo.bridge.global.utils.SpeedUtils.SpeedUnit;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.publisher.Sinks;
 
 /**
  * Emitter Simulator Service
@@ -107,5 +109,21 @@ public class EmitterSimulatorService {
             .then();
     }
 
-
+    /**
+     * 인증된 사용자에 대한 SSE 모니터링 스트림
+     * @return 해당 사용자의 Sink에서 발행되는 Flux
+     */
+    public Flux<String> monitoring(){
+        return SecurityHelper.securityHolder()
+            .flatMapMany(user -> {
+                String username = user.getUsername();
+                Sinks.Many<String> sink = SseEmiterContext.getSseEmiter(username);
+                return Flux.concat(
+                        Flux.just("{\"status\":\"connected\"}"),  // 연결 직후 즉시 전송
+                        sink.asFlux()
+                    )
+                    .doOnCancel(() -> SseEmiterContext.removeEmitter(username))
+                    .doOnTerminate(() -> SseEmiterContext.removeEmitter(username));
+            });
+    }
 }

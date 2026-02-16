@@ -5,18 +5,25 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.locationtech.jts.geom.Coordinate;
+import org.springframework.http.codec.ServerSentEvent;
 
 import com.geo.bridge.domain.emitter.integration.client.EmitterClient;
+import com.geo.bridge.global.base.BasePointDTO;
+import com.geo.bridge.global.utils.JsonUtils;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.core.publisher.Sinks;
 
 /**
  * Client Manager
@@ -63,21 +70,33 @@ public class EmitterClientManager {
 
     private Map<String, String> baseParameters;
 
+    private Sinks.Many<String> sseEmiter;
+
     /**
      * HOST에 전송 시작
      */
-    public void excute(){
+    public void excute(Sinks.Many<String> sseEmiter){
         stop();
+
+        this.sseEmiter = sseEmiter;
 
         log.info("Client Excute RunningTime :: {} Second", cooridnates.size() * cycle);
         this.status = EmitterClientStatus.PLAYING;
         this.disposable = Flux.fromIterable(cooridnates)
             .repeat(this.cycle - 1) // [핵심] 1회 실행 후 (cycle-1)번 더 반복 -> 총 cycle번 실행
             .delayElements(Duration.ofSeconds(1L))
+            .doOnNext(cooridnate -> {
+                BasePointDTO point = new BasePointDTO();
+                point.setLat(cooridnate.getY());
+                point.setLon(cooridnate.getX());
+                
+                sseEmiter.tryEmitNext(JsonUtils.toJson(point));
+            })
             .map(cooridnate -> {
                 // 파라미터 세팅
                 baseParameters.put("lat", String.valueOf(cooridnate.getY()));
                 baseParameters.put("lon", String.valueOf(cooridnate.getX()));
+                // baseParameters.put("heading", String.valueOf(cooridnate.getX()));
 
                 return this.bindFormat(baseParameters);
             })
@@ -92,7 +111,9 @@ public class EmitterClientManager {
      * HOST에 전송 정지
      */
     public void stop(){
-        if (this.disposable != null && !this.disposable.isDisposed()) {
+        boolean disposableIsNotNull = this.disposable != null && !this.disposable.isDisposed();
+        boolean isPlaying = this.status == EmitterClientStatus.PLAYING;
+        if (disposableIsNotNull && isPlaying) {
             this.disposable.dispose();
             log.info("Client stopped manually.");
             

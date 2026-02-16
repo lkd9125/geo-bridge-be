@@ -77,7 +77,7 @@ public class EmitterContext {
 
         EmitterClientManager emitterManager = clientMap.get(uuid);
         if(emitterManager != null && emitterManager.getStatus() != EmitterClientStatus.PLAYING){
-            emitterManager.excute();
+            emitterManager.excute(SseEmiterContext.getSseEmiter(custNo));
         }
 
         return uuid;
