@@ -1,9 +1,11 @@
 package com.geo.bridge.api.user.format.controller;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.geo.bridge.api.user.format.model.CreateFormatRQ;
@@ -25,6 +27,8 @@ import reactor.core.publisher.Mono;
  * <p>기능</p>
  * <ul>
  *  <li>{@link #createFormat(Mono)} User Format 저장</li>
+ *  <li>{@link #getAllUserFormat(SearchUserFormatRQ, BasePageRQ)} User Format 정보 리스트 조회(페이징)</li>
+ *  <li>{@link #deleteUserFormat(Long)} User Format 삭제</li>
  * </ul>
  */
 @RestController
@@ -56,6 +60,14 @@ public class UserFormatController {
         return userFormatService.getAllUserFormat(rq, page);
     }
 
-
+    /**
+     * User Format 삭제
+     * @param idx User Format PK
+     * @return
+     */
+    @DeleteMapping
+    public Mono<Void> deleteUserFormat(@RequestParam("idx") Long idx){
+        return userFormatService.deleteUserFormat(idx);
+    }
 
 }

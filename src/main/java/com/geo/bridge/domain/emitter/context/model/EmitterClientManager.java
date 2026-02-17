@@ -95,6 +95,7 @@ public class EmitterClientManager {
                 emitterBody.setLat(cooridnate.getLat());
                 emitterBody.setLon(cooridnate.getLon());
                 emitterBody.setHeading(cooridnate.getHeading());
+                emitterBody.setStatus(this.status.name());
 
                 SseEmiterContext.getSseEmiter(custNo).tryEmitNext(JsonUtils.toJson(emitterBody));
             })
@@ -109,6 +110,12 @@ public class EmitterClientManager {
             .flatMap(sendData -> client.send(sendData))
             .doFinally(onFinally -> {
                 this.status = EmitterClientStatus.END;
+
+                EmitterBody emitterBody = new EmitterBody();
+                emitterBody.setUuid(this.uuid);
+                emitterBody.setStatus(this.status.name());
+
+                SseEmiterContext.getSseEmiter(custNo).tryEmitNext(JsonUtils.toJson(emitterBody));
             })
             .subscribe(); // TODO :: Scheduelr Boundery 추가해야 함
     }
@@ -222,6 +229,7 @@ public class EmitterClientManager {
         private Double lat;
         private Double lon;
         private Double heading;
+        private String status;
     }
 
 }

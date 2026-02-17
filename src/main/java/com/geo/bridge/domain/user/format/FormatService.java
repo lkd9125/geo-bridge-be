@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.geo.bridge.domain.user.format.dto.SearchFormatDTO;
 import com.geo.bridge.domain.user.format.dto.entity.FormatDTO;
@@ -22,6 +23,8 @@ import reactor.core.publisher.Mono;
  * <p>기능</p>
  * <ul>
  *  <li>{@link #createForamt(Mono)} 클라이언트 생성</li>
+ *  <li>{@link #getAllFormat(SearchFormatDTO, BasePageRQ)} DB FORMAT 데이터 조회(페이징)</li>
+ *  <li>{@link #deleteFormat(Long)} DB FORMAT 삭제</li>
  * </ul>
  */
 @Service
@@ -32,7 +35,7 @@ public class FormatService {
     private final FormatRepository formatRepository;
 
     /**
-     * DB FORMAT  데이터 Save
+     * DB FORMAT 데이터 Save
      * @param mono 생성객체
      * @return
      */
@@ -43,6 +46,12 @@ public class FormatService {
             .then();
     }
 
+    /**
+     * DB FORMAT 데이터 조회(페이징)
+     * @param searchFormatDTO 조회 객체
+     * @param page 페이징
+     * @return
+     */
     public Mono<BasePageRS<FormatDTO>> getAllFormat(SearchFormatDTO searchFormatDTO, BasePageRQ page){
         Pageable pageable = PageRequest.of(page.getPage() - 1, page.getSize());
 
@@ -62,6 +71,16 @@ public class FormatService {
                     cnt.intValue()
                 );
             });
+    }
+
+    /**
+     * DB FORMAT 삭제
+     * @param idx FORMAT PK
+     * @return
+     */
+    @Transactional
+    public Mono<Void> deleteFormat(Long idx){
+        return formatRepository.deleteById(idx);
     }
 
 }

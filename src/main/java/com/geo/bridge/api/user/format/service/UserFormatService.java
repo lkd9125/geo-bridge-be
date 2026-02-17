@@ -66,6 +66,13 @@ public class UserFormatService {
             );
     }
 
+    /**
+     * User Format 삭제
+     * @param idx Format PK
+     * @return
+     */
+    public Mono<Void> deleteUserFormat(Long idx){
+        return formatService.deleteFormat(idx);
+    }
     
-
 }
