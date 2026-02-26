@@ -1,0 +1,10 @@
+spring:
+    r2dbc:
+        url: r2dbc:mysql://localhost:23306/bridge?ssl=false
+        username: bridge
+        password: geo-bridge!@#$1234
+        pool:
+            initial-size: 5
+            max-size: 20
+    flyway:
+        enabled: false

@@ -71,7 +71,7 @@ public class EmitterClientManager {
 
     private Map<String, String> baseParameters;
 
-    private Integer nowSeconds = 0;
+    private Integer nowSecond = 0;
 
     private String custNo;
 
@@ -88,14 +88,16 @@ public class EmitterClientManager {
             .delayElements(Duration.ofSeconds(1L))
             .doOnNext(cooridnate -> {
                 // excute 이후 지난 시간 측정
-                this.nowSeconds += 1;
+                this.nowSecond += 1;
                 // sse emitter monitoring용 전송
                 EmitterBody emitterBody = new EmitterBody();
                 emitterBody.setUuid(this.uuid);
+                emitterBody.setClientName(this.client.getName());
                 emitterBody.setLat(cooridnate.getLat());
                 emitterBody.setLon(cooridnate.getLon());
                 emitterBody.setHeading(cooridnate.getHeading());
                 emitterBody.setStatus(this.status.name());
+                emitterBody.setNowSecond(this.nowSecond);
 
                 SseEmiterContext.getSseEmiter(custNo).tryEmitNext(JsonUtils.toJson(emitterBody));
             })
@@ -226,10 +228,12 @@ public class EmitterClientManager {
     @Data
     private static class EmitterBody{
         private String uuid;
+        private String clientName;
         private Double lat;
         private Double lon;
         private Double heading;
         private String status;
+        private Integer nowSecond;
     }
 
 }
