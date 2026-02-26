@@ -23,8 +23,9 @@ import reactor.core.publisher.Mono;
  * HOST 서비스
  * <p>기능</p>
  * <ul>
- *     <li>{@link #createClientHost(Mono)} 클라이언트 생성</li>
- *     <li>{@link #getAllClientHost(SearchHostDTO, BasePageRQ)} 클라이언트 리스트 조회</li>
+ *     <li>{@link #createClientHost(Mono)} DB HOST 데이터 Save</li>
+ *     <li>{@link #getAllClientHost(SearchHostDTO, BasePageRQ)} DB HOST Search</li>
+ *     <li>{@link #deleteClientHost(Long)} DB HOST 삭제</li>
  * </ul>
  */
 @Service
@@ -32,18 +33,17 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class HostService {
 
-    private final HostRepository emitterClientRepository;
-
+    private final HostRepository hostRepository;
 
     /**
-     * DB HOST 데이터 Save
+     * DB HOST 저장
      * @param mono 생성객체
      * @return
      */
     public Mono<Void> createClientHost(Mono<HostDTO> mono){
         return mono
             .doOnNext(dto -> log.info(JsonUtils.toJson(dto)))
-            .flatMap(emitterClientRepository::save)
+            .flatMap(hostRepository::save)
             .onErrorResume(throwable -> {
                 log.warn("createClientHost error :: {}", throwable.getMessage());
                 if (throwable instanceof BaseException baseEx) {
@@ -55,7 +55,7 @@ public class HostService {
     }
 
     /**
-     * DB Client Infomation Search
+     * DB HOST 검색(페이징)
      * @param searchDTO 검색객체
      * @param pageable 페이지네이션
      * @return
@@ -63,8 +63,8 @@ public class HostService {
     public Mono<BasePageRS<HostDTO>> getAllClientHost(SearchHostDTO searchDTO, BasePageRQ page){
         Pageable pageable = PageRequest.of(page.getPage() - 1, page.getSize());
 
-        Mono<List<HostDTO>> listMono = emitterClientRepository.findBySearch(searchDTO, pageable).collectList();
-        Mono<Long> cntMono = emitterClientRepository.countBySearch(searchDTO);
+        Mono<List<HostDTO>> listMono = hostRepository.findBySearch(searchDTO, pageable).collectList();
+        Mono<Long> cntMono = hostRepository.countBySearch(searchDTO);
 
         return Mono.zip(listMono, cntMono)
             .map(tuple -> {
@@ -79,6 +79,15 @@ public class HostService {
                     cnt.intValue()
                 );
             });
+    }
+
+    /**
+     * DB HOST 삭제
+     * @param idx HOST PK
+     * @return
+     */
+    public Mono<Void> deleteClientHost(Long idx){
+        return hostRepository.deleteById(idx);
     }
     
 }

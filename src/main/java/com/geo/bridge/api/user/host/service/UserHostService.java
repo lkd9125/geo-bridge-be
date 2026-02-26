@@ -23,8 +23,9 @@ import reactor.core.publisher.Mono;
  * 
  * <p>기능</p>
  * <ul>
- *     <li>{@link #createEmitterClientInfo(Mono)} 클라이언트 정보 생성</li>
- *     <li>{@link #getAllEmitterClientInfo(SearchUserHostRQ, BasePageRQ)} 클라이언트 정보 생성</li>
+ *     <li>{@link #createClientHost(Mono)} Emitter Client 데이터 생성</li>
+ *     <li>{@link #getAllEmitterClientInfo(SearchUserHostRQ, BasePageRQ)} Emitter Client 정보 리스트 조회 (페이징)</li>
+ *     <li>{@link #deleteUserHost(Long)} Emitter Clinet 삭제</li>
  * </ul>
  */
 @Service
@@ -32,7 +33,7 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class UserHostService {
 
-    private final HostService clientHostService;
+    private final HostService hostService;
     private final UserService userService;
 
     /**
@@ -45,7 +46,7 @@ public class UserHostService {
     public Mono<Void> createClientHost(Mono<CreateUserHostRQ> mono){
         return mono
             .flatMap(CreateUserHostRQ::toDto)
-            .flatMap(dto -> clientHostService.createClientHost(Mono.just(dto)));
+            .flatMap(dto -> hostService.createClientHost(Mono.just(dto)));
     }
 
     /**
@@ -64,7 +65,7 @@ public class UserHostService {
             .flatMap(user -> userService.getUserByUsername(user.getUsername()))
             .flatMap(user -> {
                 searchDTO.setUserId(user.getUsername());
-                return clientHostService.getAllClientHost(searchDTO, page);
+                return hostService.getAllClientHost(searchDTO, page);
             })
             .flatMap(pageRS ->
                 Flux.fromIterable(pageRS.getList())
@@ -80,6 +81,15 @@ public class UserHostService {
                         )
                     )
             );
+    }
+
+    /**
+     * Emitter Clinet 삭제
+     * @param idx HOST PK
+     * @return
+     */
+    public Mono<Void> deleteUserHost(Long idx){
+        return hostService.deleteClientHost(idx);
     }
 
 }
