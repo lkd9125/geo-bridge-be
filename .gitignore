@@ -37,7 +37,6 @@ out/
 .vscode/
 
 nginx
-/src/main/resources/**-dev.yml
 application.pid
 firebase/
 
