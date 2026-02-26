@@ -1,9 +1,11 @@
 package com.geo.bridge.api.user.host.controller;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.geo.bridge.api.user.host.model.CreateUserHostRQ;
@@ -26,6 +28,7 @@ import reactor.core.publisher.Mono;
  * <ul>
  *     <li>{@link #createEmitterClientInfo(Mono)} 클라이언트 정보 생성</li>
  *     <li>{@link #getAllEmitterClientInfo(SearchUserHostRQ, BasePageRQ)} 클라이언트 정보 생성</li>
+ *     <li>{@link #deleteClientHost(Long)} 클라이언트 정보 삭제</li>
  * </ul>
  */
 @RestController
@@ -55,6 +58,16 @@ public class UserHostController {
     @GetMapping("/plist")
     public Mono<BasePageRS<SearchUserHostRS>> getAllEmitterClientInfo(@Valid SearchUserHostRQ rq, BasePageRQ page){
         return emitterClientInfoService.getAllEmitterClientInfo(rq, page);
+    }
+
+    /**
+     * Emitter Client Host 삭제
+     * @param idx User HOST PK
+     * @return
+     */
+    @DeleteMapping
+    public Mono<Void> deleteClientHost(@RequestParam("idx") Long idx){
+        return emitterClientInfoService.deleteUserHost(idx);
     }
 
 }
