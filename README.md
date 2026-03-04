@@ -12,10 +12,10 @@
 * **Job Control System:** 시뮬레이터 실행 시 고유 UUID를 발급하여, 개별 시뮬레이션의 상태 모니터링 및 실시간 강제 종료(Kill) 제어 가능.
 
 ## 🛠 Tech Stack
-* **Framework:** Spring Boot, Spring WebFlux
-* **Database:** R2DBC (Reactive Relational Database Connectivity)
-* **Language:** Java / Kotlin (사용하신 언어 작성)
-* **Build Tool:** Gradle / Maven (사용하신 툴 작성)
+* **Framework:** Spring Boot, Spring WebFlux, Spring R2DBC
+* **Database:** MySQL
+* **Language:** Java
+* **Build Tool:** Gradle
 
 ## 🏗 Architecture & Data Flow
 
