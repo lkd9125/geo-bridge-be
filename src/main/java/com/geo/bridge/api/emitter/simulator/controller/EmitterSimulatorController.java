@@ -14,7 +14,6 @@ import com.geo.bridge.api.emitter.simulator.service.EmitterSimulatorService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
@@ -53,16 +52,5 @@ public class EmitterSimulatorController {
     public Mono<Void> stopEmitterSimulator(@RequestParam("uuid") String uuid){
         return emitterSimulatorService.stopEmitterSmiulator(uuid);
     }
-
-    /**
-     * 시뮬레이션 좌표 모니터링
-     * @return
-     */
-    @GetMapping(value = "/monitoring/coords", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<String> monitoring(){
-        return emitterSimulatorService.monitoring();
-    }
-
-    
 
 }

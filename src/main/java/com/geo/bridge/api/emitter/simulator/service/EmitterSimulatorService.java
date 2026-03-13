@@ -109,21 +109,4 @@ public class EmitterSimulatorService {
             .then();
     }
 
-    /**
-     * 인증된 사용자에 대한 SSE 모니터링 스트림
-     * @return 해당 사용자의 Sink에서 발행되는 Flux
-     */
-    public Flux<String> monitoring(){
-        return SecurityHelper.securityHolder()
-            .flatMapMany(user -> {
-                String username = user.getUsername();
-                Sinks.Many<String> sink = SseEmiterContext.getSseEmiter(username);
-                return Flux.concat(
-                        Flux.just("{\"status\":\"connected\"}"),  // 연결 직후 즉시 전송
-                        sink.asFlux()
-                    )
-                    .doOnCancel(() -> SseEmiterContext.removeEmitter(username))
-                    .doOnTerminate(() -> SseEmiterContext.removeEmitter(username));
-            });
-    }
 }
