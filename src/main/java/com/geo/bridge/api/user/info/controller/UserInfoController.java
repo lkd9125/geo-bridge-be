@@ -1,11 +1,14 @@
 package com.geo.bridge.api.user.info.controller;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.geo.bridge.api.user.info.model.CreateUserRQ;
+import com.geo.bridge.api.user.info.model.GetUserRS;
 import com.geo.bridge.api.user.info.service.UserInfoService;
 
 import jakarta.validation.Valid;
@@ -31,4 +34,12 @@ public class UserInfoController {
         return userInfoService.createUser(mono);
     }
 
+    /**
+     * 유저 정보 반환
+     * @return
+     */
+    @GetMapping
+    public Mono<GetUserRS> getUser(){
+        return userInfoService.getUser();
+    }
 }

@@ -123,12 +123,17 @@ public class MqttEmitterClient implements EmitterClient{
     public Mono<Void> send(String sendData) {
         return Mono.<Void>fromRunnable(() -> {
                 try {
-                    mqttClient.publish(
-                        topic,
-                        sendData.getBytes(),
-                        1,
-                        false
-                    );
+                    if(this.isConnected()){
+                        mqttClient.publish(
+                            topic,
+                            sendData.getBytes(),
+                            1,
+                            false
+                        );
+                    } else {
+                        log.info("[{}] CLIENT 미연결", this.name);
+                    }
+
                 } catch (MqttException e) {
                     throw new RuntimeException(e);
                 }

@@ -102,6 +102,9 @@ public class EmitterClientManager {
                 SseEmiterContext.getSseEmiter(custNo).tryEmitNext(JsonUtils.toJson(emitterBody));
             })
             .map(cooridnate -> {
+                if(baseParameters == null){
+                    baseParameters = new HashMap<>();
+                }
                 // 파라미터 세팅
                 baseParameters.put("lat", String.valueOf(cooridnate.getLat()));
                 baseParameters.put("lon", String.valueOf(cooridnate.getLon()));

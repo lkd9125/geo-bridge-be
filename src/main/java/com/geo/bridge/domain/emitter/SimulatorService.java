@@ -122,6 +122,17 @@ public class SimulatorService {
             }
         }
 
+        // 첫 좌표 헤딩 없는 부분 체크 
+        BasePointDTO firstPoint = timeStepCoordinates.get(0);
+        BasePointDTO newPoint = timeStepCoordinates.get(1);
+
+        double dx = newPoint.getLon() - firstPoint.getLon(); // 경도 차이
+        double dy = newPoint.getLat() - firstPoint.getLat(); // 위도 차이
+
+        double heading = Math.toDegrees(Math.atan2(dx, dy));
+
+        timeStepCoordinates.get(0).setHeading(heading);
+
         return Flux.fromIterable(timeStepCoordinates)
             .collectList();
     }
