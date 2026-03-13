@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class GetUserRS {
 
-    
+    private String id;
 
 }
