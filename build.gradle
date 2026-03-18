@@ -69,6 +69,7 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'io.projectreactor:reactor-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	testImplementation 'io.github.lkd9125:sctf-test-slice:0.1.1'
 }
 
 tasks.named('test') {
