@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.geo.bridge.domain.emitter.integration.client.EmitterClient;
 import com.geo.bridge.domain.emitter.integration.client.MqttEmitterClient;
+import com.geo.bridge.domain.emitter.integration.client.TcpEmitterClient;
 import com.geo.bridge.domain.emitter.integration.client.WsEmitterClient;
 import com.geo.bridge.domain.emitter.integration.model.EmitterType;
 import com.geo.bridge.global.exception.BaseException;
@@ -42,6 +43,7 @@ public class IntegrationService {
         return switch(type){
             case MQTT -> Mono.just(new MqttEmitterClient(name, host, topic, username, password, parameter));
             case WS -> Mono.just(new WsEmitterClient(name, host, parameter));
+            case TCP -> Mono.just(new TcpEmitterClient(name, host, parameter));
             default -> throw new BaseException();
         };
     }
