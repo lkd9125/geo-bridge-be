@@ -5,14 +5,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.locationtech.jts.geom.Coordinate;
-import org.springframework.http.codec.ServerSentEvent;
 
 import com.geo.bridge.domain.emitter.context.SseEmiterContext;
 import com.geo.bridge.domain.emitter.integration.client.EmitterClient;
@@ -23,8 +18,6 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-import reactor.core.publisher.Sinks;
 
 /**
  * Client Manager

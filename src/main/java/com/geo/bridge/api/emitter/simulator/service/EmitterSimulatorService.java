@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import com.geo.bridge.api.emitter.simulator.model.EmitterSimulatorRQ;
 import com.geo.bridge.domain.emitter.SimulatorService;
 import com.geo.bridge.domain.emitter.context.EmitterContext;
-import com.geo.bridge.domain.emitter.context.SseEmiterContext;
 import com.geo.bridge.domain.emitter.integration.client.EmitterClient;
 import com.geo.bridge.domain.emitter.model.CreateSimulatorClientDTO;
 import com.geo.bridge.global.base.BasePointDTO;
@@ -20,9 +19,7 @@ import com.geo.bridge.global.utils.SpeedUtils.SpeedUnit;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.core.publisher.Sinks;
 
 /**
  * Emitter Simulator Service
