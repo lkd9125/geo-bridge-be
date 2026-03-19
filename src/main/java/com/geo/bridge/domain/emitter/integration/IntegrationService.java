@@ -20,7 +20,7 @@ import reactor.core.publisher.Mono;
  * 
  * <p>기능</p>
  * <ul>
- *     <li>{@link #createIntegrationEmitterClient(String, String, String, String, String, EmitterType)} 통합 클라이언트 생성</li>
+ *     <li>{@link #createIntegrationEmitterClient(String, String, String, String, String, EmitterType, Map)} 통합 클라이언트 생성</li>
  * </ul>
  */
 @Service

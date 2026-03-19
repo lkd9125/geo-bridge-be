@@ -24,7 +24,7 @@ import reactor.core.publisher.Mono;
  * 
  * <p>기능</p>
  * <ul>
- *     <li>{@link #createSimulatorCoordinates(List, Double, int)} 위치 데이터 계산 후 발행</li>
+ *     <li>{@link #createSimulatorCoordinates(List, Double)} 위치 데이터 계산 후 발행</li>
  *     <li>{@link #createSimulatorClient(CreateSimulatorClientDTO)} 시뮬레이션 클라이언트 생성 및 등록(Context)</li>
  * </ul>
  */

@@ -9,6 +9,16 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Jackson 기반 JSON 유틸리티.
+ *
+ * <ul>
+ *  <li>{@link #toJson(Object)} 객체 → JSON 문자열</li>
+ *  <li>{@link #fromJson(String, Class)} JSON 문자열 → 객체</li>
+ *  <li>{@link #fromJson(String, TypeReference)} JSON 문자열 → 제네릭 타입 객체</li>
+ *  <li>{@link #toJsonNode(String)} JSON 문자열 → {@link JsonNode}</li>
+ * </ul>
+ */
 @Slf4j
 public class JsonUtils {
     private static final ObjectMapper objectMapper;
@@ -61,7 +71,7 @@ public class JsonUtils {
      * JSON 문자열을 객체로 변환
      *
      * @param json  JSON 문자열
-     * @param clazz 변환할 클래스 타입
+     * @param valueTypeRef 변환할 타입 레퍼런스
      * @param <T>   클래스 타입
      * @return 변환된 객체
      */
@@ -74,6 +84,12 @@ public class JsonUtils {
         }
     }
 
+    /**
+     * JSON 문자열을 {@link JsonNode}로 변환합니다.
+     *
+     * @param json JSON 문자열
+     * @return JSON 트리 노드(실패 시 null)
+     */
     public static JsonNode toJsonNode(String json) {
         try {
             return objectMapper.readTree(json);

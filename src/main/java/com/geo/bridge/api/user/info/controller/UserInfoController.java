@@ -25,8 +25,8 @@ public class UserInfoController {
 
     /**
      * 유저 생성
-     * @param mono <CreateUserRQ> user 생성 RQ
-     * @return
+     * @param mono {@link CreateUserRQ} 유저 생성 요청
+     * @return 생성 완료 시그널
      */
     @PostMapping
     public Mono<Void> createUser(@RequestBody @Valid Mono<CreateUserRQ> mono){
@@ -35,7 +35,7 @@ public class UserInfoController {
 
     /**
      * 유저 정보 반환
-     * @return
+     * @return 인증 사용자 정보
      */
     @GetMapping
     public Mono<GetUserRS> getUser(){

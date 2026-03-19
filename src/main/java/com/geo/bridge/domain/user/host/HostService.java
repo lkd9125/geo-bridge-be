@@ -57,8 +57,8 @@ public class HostService {
     /**
      * DB HOST 검색(페이징)
      * @param searchDTO 검색객체
-     * @param pageable 페이지네이션
-     * @return
+     * @param page 페이지 정보(페이지/사이즈/범위)
+     * @return 검색 결과 페이지
      */
     public Mono<BasePageRS<HostDTO>> getAllClientHost(SearchHostDTO searchDTO, BasePageRQ page){
         Pageable pageable = PageRequest.of(page.getPage() - 1, page.getSize());

@@ -11,6 +11,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 
+/**
+ * Emitter Client 모니터링 Controller.
+ *
+ * <p>기능</p>
+ * <ul>
+ *  <li>{@link #monitoring()} 인증 사용자 기준 SSE 모니터링 스트림 제공</li>
+ * </ul>
+ */
 @RestController
 @Slf4j
 @RequiredArgsConstructor
@@ -21,7 +29,7 @@ public class EmitterClientController {
 
     /**
      * 시뮬레이션 좌표 모니터링
-     * @return
+     * @return SSE(Text Event Stream) 데이터 스트림
      */
     @GetMapping(value = "/monitoring/coords", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<String> monitoring(){

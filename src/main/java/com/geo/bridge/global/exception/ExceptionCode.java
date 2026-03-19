@@ -3,6 +3,13 @@ package com.geo.bridge.global.exception;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * 전역 예외 코드 정의.
+ *
+ * <p>
+ * API 에러 응답을 일관되게 만들기 위해 코드/HTTP 상태/메시지를 표준화합니다.
+ * </p>
+ */
 @RequiredArgsConstructor
 @Getter
 public enum ExceptionCode {

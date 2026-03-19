@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.locationtech.jts.geom.Coordinate;
-
 import com.geo.bridge.domain.emitter.context.model.EmitterClientManager;
 import com.geo.bridge.domain.emitter.context.model.EmitterClientStatus;
 import com.geo.bridge.domain.emitter.integration.client.EmitterClient;
@@ -22,8 +20,10 @@ import lombok.extern.slf4j.Slf4j;
  * 
  * <p>기능</p>
  * <ul>
- *  <li>{@link #put(String, EmitterClient, String, List)} EmitterClient를 Context에 등록</li>
+ *  <li>{@link #put(String, EmitterClient, String, List, int)} EmitterClient를 Context에 등록</li>
  *  <li>{@link #excute(String, String)} Emitter 실행</li>
+ *  <li>{@link #stop(String, String)} Emitter 정지</li>
+ *  <li>{@link #remove(String, String)} Emitter Manager 삭제</li>
  * </ul>
  */
 @Slf4j
@@ -87,8 +87,8 @@ public class EmitterContext {
 
     /**
      * Emitter Manager 삭제
-     * @param custNo
-     * @param uuid
+     * @param custNo 유저번호
+     * @param uuid Manager 고유키
      */
     public static void remove(String custNo, String uuid){
         Map<String, EmitterClientManager> clientMap = emitterManagerMap.get(custNo);
@@ -106,8 +106,8 @@ public class EmitterContext {
 
     /**
      * Emitter 정지
-     * @param custNo
-     * @param uuid
+     * @param custNo 유저번호
+     * @param uuid Manager 고유키
      */
     public static void stop(String custNo, String uuid){
         Map<String, EmitterClientManager> clientMap = emitterManagerMap.get(custNo);

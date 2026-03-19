@@ -70,6 +70,12 @@ public class EmitterClientManager {
 
     /**
      * HOST에 전송 시작
+     *
+     * <p>
+     * 등록된 {@link #cooridnates}를 1초 주기로 순회하며, {@link #format} 템플릿에 좌표/헤딩을 바인딩한 뒤
+     * {@link #client}로 전송합니다. 동시에 SSE 모니터링을 위해 사용자별 Sink({@link SseEmiterContext})로
+     * 현재 좌표/상태를 발행합니다.
+     * </p>
      */
     public void excute(){
         stop();
@@ -120,6 +126,10 @@ public class EmitterClientManager {
 
     /**
      * HOST에 전송 정지
+     *
+     * <p>
+     * 실행 중인 Flux 구독({@link #disposable})을 dispose하여 주기 전송을 중단합니다.
+     * </p>
      */
     public void stop(){
         boolean disposableIsNotNull = this.disposable != null && !this.disposable.isDisposed();
@@ -134,7 +144,12 @@ public class EmitterClientManager {
 
     /**
      * Format Setting
-     * @param format
+     *
+     * <p>
+     * 전송 포맷 템플릿을 설정하고, 고정 텍스트/변수 구간을 미리 파싱하여 바인딩 성능을 최적화합니다.
+     * </p>
+     *
+     * @param format 전송 템플릿 문자열
      */
     public void setFormat(String format){
         this.fastBinder = new FastBinder(format);
@@ -142,15 +157,29 @@ public class EmitterClientManager {
 
     /**
      * 포맷팅 바인딩
-     * @param lat 위도
-     * @param lon 경도
-     * @return binding 한 전송 포맷
+     *
+     * @param parameters 바인딩 파라미터
+     * @return 템플릿에 값이 치환된 전송 문자열
      */
     private String bindFormat(Map<String, String> parameters){
         return fastBinder.bind(parameters);
     }
 
     
+    /**
+     * 템플릿 문자열의 바인딩을 빠르게 수행하기 위한 내부 바인더.
+     *
+     * <p>
+     * 템플릿 파싱은 생성 시 1회만 수행하고, 전송 루프에서는 {@link #bind(Map)}만 호출하여
+     * 문자열 치환 비용을 줄입니다.
+     * </p>
+     *
+     * <p>템플릿 규칙</p>
+     * <ul>
+     *  <li>{@code #{key}} 형태의 변수 토큰을 사용</li>
+     *  <li>맵에 값이 없으면 빈 문자열로 치환</li>
+     * </ul>
+     */
     @Data
     private static class FastBinder{
         // 템플릿 조각을 저장할 내부 클래스
@@ -203,6 +232,12 @@ public class EmitterClientManager {
         }
 
         // 실제 데이터 바인딩 (매우 빠름)
+        /**
+         * 파싱된 세그먼트를 기반으로 템플릿에 값을 바인딩합니다.
+         *
+         * @param data 치환할 값 맵
+         * @return 치환 결과 문자열
+         */
         public String bind(Map<String, String> data) {
             // StringBuilder 크기를 미리 지정하여 내부 배열 Resizing 오버헤드 방지
             StringBuilder sb = new StringBuilder(estimatedLength + 32);
@@ -221,6 +256,14 @@ public class EmitterClientManager {
         }
     }
 
+    /**
+     * SSE 모니터링으로 전달하기 위한 전송 상태 모델.
+     *
+     * <p>
+     * 외부 전송 payload와는 별개로, 프런트/클라이언트가 “현재 상태/좌표/진행 초”를 쉽게 소비할 수 있도록
+     * 필요한 필드만 담습니다.
+     * </p>
+     */
     @Data
     private static class EmitterBody{
         private String uuid;

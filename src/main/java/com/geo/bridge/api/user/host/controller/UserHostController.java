@@ -26,7 +26,7 @@ import reactor.core.publisher.Mono;
  * 
  * <p>기능</p>
  * <ul>
- *     <li>{@link #createEmitterClientInfo(Mono)} 클라이언트 정보 생성</li>
+ *     <li>{@link #createClientHost(Mono)} 클라이언트 정보 생성</li>
  *     <li>{@link #getAllEmitterClientInfo(SearchUserHostRQ, BasePageRQ)} 클라이언트 정보 생성</li>
  *     <li>{@link #deleteClientHost(Long)} 클라이언트 정보 삭제</li>
  * </ul>
