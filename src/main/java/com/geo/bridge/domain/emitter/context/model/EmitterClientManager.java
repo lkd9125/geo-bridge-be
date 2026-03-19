@@ -137,8 +137,8 @@ public class EmitterClientManager {
         if (disposableIsNotNull && isPlaying) {
             this.disposable.dispose();
             log.info("Client stopped manually.");
-            
             this.status = EmitterClientStatus.END;
+            this.client.disconnect();
         }
     }
 

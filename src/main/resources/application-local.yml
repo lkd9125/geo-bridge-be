@@ -1,4 +1,7 @@
 spring:
+    output:
+        ansi:
+            enabled: always
     r2dbc:
         url: r2dbc:mysql://localhost:23306/bridge?ssl=false
         username: bridge

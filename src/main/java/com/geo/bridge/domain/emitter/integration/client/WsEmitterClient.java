@@ -2,7 +2,9 @@ package com.geo.bridge.domain.emitter.integration.client;
 
 import java.net.URI;
 import java.util.Map;
+import java.util.UUID;
 
+import com.geo.bridge.domain.emitter.context.ConnectionContext;
 import org.springframework.web.reactive.socket.WebSocketSession;
 import org.springframework.web.reactive.socket.client.ReactorNettyWebSocketClient;
 import org.springframework.web.reactive.socket.client.WebSocketClient;
@@ -37,6 +39,8 @@ public class WsEmitterClient implements EmitterClient{
     private WebSocketClient client = new ReactorNettyWebSocketClient();
     private WebSocketSession session;
     private Disposable disposable;
+    private final String ownerId = UUID.randomUUID().toString();
+    private String connectionKey;
 
     /**
      * WS Emitter Client 생성자.
@@ -59,8 +63,19 @@ public class WsEmitterClient implements EmitterClient{
     @Override
     public void connect() {
         URI uri = URI.create(host);
+        this.connectionKey = buildWsConnectionKey(uri);
+        ConnectionContext.acquireWsClient(this.connectionKey, this.ownerId);
+
+        WebSocketSession sharedSession = ConnectionContext.getWsClient(this.connectionKey);
+        if (sharedSession != null && sharedSession.isOpen()) {
+            this.session = sharedSession;
+            log.info("WS REUSE CONNECTED :: {}", name);
+            return;
+        }
+
         disposable = client.execute(uri, session -> {
                 this.session = session;
+                ConnectionContext.bindWsClient(this.connectionKey, session, this.disposable);
                 return session.receive().then();
             })
             .doOnSuccess(monoVoid -> log.info("CONNECTED :: {}", name))
@@ -80,19 +95,9 @@ public class WsEmitterClient implements EmitterClient{
      */
     @Override
     public void disconnect() {
-        try {
-            if (session != null && session.isOpen()) {
-                session.close().subscribe();
-                this.session = null;
-            }
-
-            if (disposable != null && !disposable.isDisposed()) {
-                disposable.dispose();
-                disposable = null;
-            }
-        } catch (Exception e) {
-            log.error("disconnect error", e);
-        }
+        ConnectionContext.releaseWsClient(this.connectionKey, this.ownerId);
+        this.session = null;
+        this.disposable = null;
     }
 
     @Override
@@ -121,6 +126,17 @@ public class WsEmitterClient implements EmitterClient{
     @Override
     public String getTopic() {
         return null;
+    }
+
+    private String buildWsConnectionKey(URI uri) {
+        String scheme = uri.getScheme() == null ? "ws" : uri.getScheme();
+        int port = uri.getPort();
+        if (port < 0) {
+            port = "wss".equalsIgnoreCase(scheme) ? 443 : 80;
+        }
+        String path = uri.getPath() == null ? "" : uri.getPath();
+        String query = uri.getQuery() == null ? "" : uri.getQuery();
+        return String.join("|", scheme, uri.getHost(), String.valueOf(port), path, query);
     }
 
 }

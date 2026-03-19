@@ -2,12 +2,14 @@ package com.geo.bridge.domain.emitter.integration.client;
 
 import java.util.Map;
 import java.util.UUID;
+import java.util.Objects;
 
 import org.eclipse.paho.mqttv5.client.MqttClient;
 import org.eclipse.paho.mqttv5.client.MqttConnectionOptions;
 import org.eclipse.paho.mqttv5.client.persist.MemoryPersistence;
 import org.eclipse.paho.mqttv5.common.MqttException;
 
+import com.geo.bridge.domain.emitter.context.ConnectionContext;
 import com.geo.bridge.global.config.IOScheduler;
 
 import lombok.Data;
@@ -33,12 +35,13 @@ public class MqttEmitterClient implements EmitterClient{
 
     private String name;
     private String host;
-    private boolean isConnected = false;
     private String topic;
     private String username;
     private String password;
     private MqttClient mqttClient;
     private Map<String, String> parameter;
+    private final String ownerId = UUID.randomUUID().toString();
+    private String connectionKey;
     
     /**
      * MQTT 클라이언트 생성과 동시에 연결
@@ -90,12 +93,32 @@ public class MqttEmitterClient implements EmitterClient{
                 opts.setPassword(this.password.getBytes());
             }
 
-            MqttClient mqttClient = new MqttClient(this.host, clientId, new MemoryPersistence());
-            mqttClient.connect(opts);
+            String passwordHash = Integer.toHexString(Objects.hashCode(this.password));
+            this.connectionKey = String.join("|",
+                this.host,
+                String.valueOf(this.topic),
+                String.valueOf(this.username),
+                passwordHash
+            );
+
+            MqttClient mqttClient = ConnectionContext.acquireMqttClient(
+                this.connectionKey,
+                this.ownerId,
+                () -> {
+                    try {
+                        return new MqttClient(this.host, clientId, new MemoryPersistence());
+                    } catch (MqttException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            );
+
+            if(!mqttClient.isConnected()){
+                mqttClient.connect(opts);
+            }
             
             this.mqttClient = mqttClient;
             log.info("Try '{}' TCP Connect {} : {}", name, clientId, this.host);
-            this.isConnected = true;
         } catch (MqttException e){
             log.error("THIS {} CONNECTED ERROR :: {}", this.name, e.getMessage());
         } catch (Exception e){
@@ -105,18 +128,20 @@ public class MqttEmitterClient implements EmitterClient{
 
     @Override
     public void disconnect() {
-        if(this.isConnected()){
+        ConnectionContext.releaseMqttClient(this.connectionKey, this.ownerId, client -> {
             try {
-                this.mqttClient.disconnect();
+                if(client != null && client.isConnected()){
+                    client.disconnect();
+                }
             } catch (MqttException e) {
                 log.warn("MQTT disconnect error: {}", e.getMessage(), e);
             }
-        }
+        });
     }
 
     @Override
     public Boolean isConnected() {
-        return this.isConnected;
+        return this.mqttClient != null && this.mqttClient.isConnected();
     }
 
     @Override
