@@ -11,6 +11,10 @@ import java.util.function.Supplier;
 import org.eclipse.paho.mqttv5.client.MqttClient;
 import org.springframework.web.reactive.socket.WebSocketSession;
 
+import com.geo.bridge.domain.emitter.integration.client.EmitterClient;
+import com.geo.bridge.domain.emitter.integration.client.MqttEmitterClient;
+import com.geo.bridge.domain.emitter.integration.client.WsEmitterClient;
+
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.Disposable;
 
@@ -236,6 +240,44 @@ public class ConnectionContext {
      */
     public static void removeObserver(ConnectionObserver observer) {
         observers.remove(observer);
+    }
+
+    /**
+     * EmitterClient 타입에 맞는 공유 커넥션 종료 처리를 수행합니다.
+     *
+     * <p>
+     * 공유 커넥션을 사용하는 WS/MQTT는 Context의 release 메서드를 통해 참조 카운트를 정리하고,
+     * 그 외 프로토콜은 클라이언트 자체 disconnect 로직에 위임합니다.
+     * </p>
+     *
+     * @param client 종료할 emitter client
+     */
+    public static void releaseClient(EmitterClient client) {
+        if (client == null) {
+            return;
+        }
+
+        if (client instanceof WsEmitterClient wsClient) {
+            releaseWsClient(wsClient.getConnectionKey(), wsClient.getOwnerId());
+            wsClient.setSession(null);
+            wsClient.setDisposable(null);
+            return;
+        }
+
+        if (client instanceof MqttEmitterClient mqttClient) {
+            releaseMqttClient(mqttClient.getConnectionKey(), mqttClient.getOwnerId(), sharedClient -> {
+                try {
+                    if (sharedClient != null && sharedClient.isConnected()) {
+                        sharedClient.disconnect();
+                    }
+                } catch (Exception e) {
+                    log.warn("MQTT disconnect error: {}", e.getMessage(), e);
+                }
+            });
+            return;
+        }
+
+        client.disconnect();
     }
 
     private static void notifyAcquire(String protocol, String key, String ownerId, int refCount, boolean created) {

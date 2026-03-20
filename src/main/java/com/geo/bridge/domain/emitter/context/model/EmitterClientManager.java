@@ -6,9 +6,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.geo.bridge.domain.emitter.context.ConnectionContext;
 import com.geo.bridge.domain.emitter.context.SseEmiterContext;
 import com.geo.bridge.domain.emitter.integration.client.EmitterClient;
 import com.geo.bridge.global.base.BasePointDTO;
@@ -68,6 +70,8 @@ public class EmitterClientManager {
 
     private String custNo;
 
+    private final AtomicBoolean finished = new AtomicBoolean(false);
+
     /**
      * HOST에 전송 시작
      *
@@ -79,6 +83,7 @@ public class EmitterClientManager {
      */
     public void excute(){
         stop();
+        this.finished.set(false);
 
         log.info("Client Excute RunningTime :: {} Second", cooridnates.size() * cycle);
         this.status = EmitterClientStatus.PLAYING;
@@ -113,13 +118,7 @@ public class EmitterClientManager {
             })
             .flatMap(sendData -> client.send(sendData))
             .doFinally(onFinally -> {
-                this.status = EmitterClientStatus.END;
-
-                EmitterBody emitterBody = new EmitterBody();
-                emitterBody.setUuid(this.uuid);
-                emitterBody.setStatus(this.status.name());
-
-                SseEmiterContext.getSseEmiter(custNo).tryEmitNext(JsonUtils.toJson(emitterBody));
+                finish();
             })
             .subscribe(); // TODO :: Scheduelr Boundery 추가해야 함
     }
@@ -137,9 +136,23 @@ public class EmitterClientManager {
         if (disposableIsNotNull && isPlaying) {
             this.disposable.dispose();
             log.info("Client stopped manually.");
-            this.status = EmitterClientStatus.END;
-            this.client.disconnect();
+            finish();
         }
+    }
+
+    private void finish() {
+        if (!this.finished.compareAndSet(false, true)) {
+            return;
+        }
+
+        this.status = EmitterClientStatus.END;
+        ConnectionContext.releaseClient(this.client);
+
+        EmitterBody emitterBody = new EmitterBody();
+        emitterBody.setUuid(this.uuid);
+        emitterBody.setStatus(this.status.name());
+
+        SseEmiterContext.getSseEmiter(custNo).tryEmitNext(JsonUtils.toJson(emitterBody));
     }
 
     /**

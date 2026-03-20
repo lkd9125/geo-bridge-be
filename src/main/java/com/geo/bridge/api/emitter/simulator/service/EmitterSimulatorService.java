@@ -6,6 +6,7 @@ import java.util.List;
 import org.locationtech.jts.geom.Coordinate;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.yaml.snakeyaml.util.Tuple;
 
 import com.geo.bridge.api.emitter.simulator.model.EmitterSimulatorRQ;
 import com.geo.bridge.domain.emitter.SimulatorService;
@@ -14,12 +15,14 @@ import com.geo.bridge.domain.emitter.integration.client.EmitterClient;
 import com.geo.bridge.domain.emitter.model.CreateSimulatorClientDTO;
 import com.geo.bridge.global.base.BasePointDTO;
 import com.geo.bridge.global.security.SecurityHelper;
+import com.geo.bridge.global.security.model.CustomUserDetails;
 import com.geo.bridge.global.utils.SpeedUtils;
 import com.geo.bridge.global.utils.SpeedUtils.SpeedUnit;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
+import reactor.util.function.Tuples;
 
 /**
  * Emitter Simulator Service
@@ -102,7 +105,19 @@ public class EmitterSimulatorService {
      */
     public Mono<Void> stopEmitterSmiulator(String uuid){
         return SecurityHelper.securityHolder()
-            .doOnNext(user -> EmitterContext.stop(user.getUsername(), uuid))
+            .map(user -> {
+                EmitterContext.stop(user.getUsername(), uuid);
+                return Tuples.of(user, true);
+            })
+            .doOnSuccess(zip -> {
+                Boolean successYn = zip.getT2();
+                if(successYn){
+                    CustomUserDetails user = zip.getT1();
+                    
+                    String username = user.getUsername();
+                    EmitterContext.remove(username, uuid);
+                }
+            })
             .then();
     }
 
