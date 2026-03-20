@@ -40,6 +40,7 @@ import reactor.core.publisher.Flux;
  * <p>기능</p>
  * <ul>
  *  <li>{@link #excute()} Client 데이터 전송 시작</li>
+ *  <li>{@link #restart()} Client 재연결 후 데이터 전송 재시작</li>
  *  <li>{@link #bindFormat(Map)} 포맷팅 바인딩</li>
  *  <li>{@link #stop()} Client 데이터 전송 정지</li>
  * </ul>
@@ -84,6 +85,7 @@ public class EmitterClientManager {
     public void excute(){
         stop();
         this.finished.set(false);
+        this.nowSecond = 0;
 
         log.info("Client Excute RunningTime :: {} Second", cooridnates.size() * cycle);
         this.status = EmitterClientStatus.PLAYING;
@@ -121,6 +123,18 @@ public class EmitterClientManager {
                 finish();
             })
             .subscribe(); // TODO :: Scheduelr Boundery 추가해야 함
+    }
+
+    /**
+     * HOST 재연결 후 전송을 다시 시작합니다.
+     *
+     * <p>
+     * 자연 종료된 시뮬레이터를 동일 manager/client 기준으로 다시 실행할 때 사용합니다.
+     * </p>
+     */
+    public void restart() {
+        this.client.connect();
+        this.excute();
     }
 
     /**

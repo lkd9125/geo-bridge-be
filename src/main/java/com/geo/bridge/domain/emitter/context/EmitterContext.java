@@ -22,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
  * <ul>
  *  <li>{@link #put(String, EmitterClient, String, List, int)} EmitterClient를 Context에 등록</li>
  *  <li>{@link #excute(String, String)} Emitter 실행</li>
+ *  <li>{@link #restart(String, String)} Emitter 재실행</li>
  *  <li>{@link #stop(String, String)} Emitter 정지</li>
  *  <li>{@link #remove(String, String)} Emitter Manager 삭제</li>
  * </ul>
@@ -80,6 +81,26 @@ public class EmitterContext {
         EmitterClientManager emitterManager = clientMap.get(uuid);
         if(emitterManager != null && emitterManager.getStatus() != EmitterClientStatus.PLAYING){
             emitterManager.excute();
+        }
+
+        return uuid;
+    }
+
+    /**
+     * Emitter 재실행
+     * @param custNo 유저번호
+     * @param uuid Manager 고유키
+     * @return Manager 고유키
+     */
+    public static String restart(String custNo, String uuid){
+        Map<String, EmitterClientManager> clientMap = emitterManagerMap.get(custNo);
+        if(clientMap == null){
+            throw new BaseException(ExceptionCode.PARAMETER_INVALID);
+        }
+
+        EmitterClientManager emitterManager = clientMap.get(uuid);
+        if(emitterManager != null && emitterManager.getStatus() != EmitterClientStatus.PLAYING){
+            emitterManager.restart();
         }
 
         return uuid;

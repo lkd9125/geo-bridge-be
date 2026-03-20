@@ -6,9 +6,9 @@ import java.util.List;
 import org.locationtech.jts.geom.Coordinate;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import org.yaml.snakeyaml.util.Tuple;
 
 import com.geo.bridge.api.emitter.simulator.model.EmitterSimulatorRQ;
+import com.geo.bridge.api.emitter.simulator.model.EmitterSimulatorRestartRQ;
 import com.geo.bridge.domain.emitter.SimulatorService;
 import com.geo.bridge.domain.emitter.context.EmitterContext;
 import com.geo.bridge.domain.emitter.integration.client.EmitterClient;
@@ -30,6 +30,7 @@ import reactor.util.function.Tuples;
  * <ul>
  *     <li>{@link #startEmitterSimulator(Mono)} 시뮬레이션 시작</li>
  *     <li>{@link #stopEmitterSmiulator(String)} 시뮬레이션 정지</li>
+ *     <li>{@link #restartEmitterSimulator(EmitterSimulatorRestartRQ)} 시뮬레이션 재시작</li>
  * </ul>
  */
 @Service
@@ -100,8 +101,9 @@ public class EmitterSimulatorService {
 
     /**
      * 시뮬레이션 정지
+     *
      * @param uuid Emitter Control UUID
-     * @return
+     * @return 정지 및 Context 제거 완료 시그널
      */
     public Mono<Void> stopEmitterSmiulator(String uuid){
         return SecurityHelper.securityHolder()
@@ -119,6 +121,25 @@ public class EmitterSimulatorService {
                 }
             })
             .then();
+    }
+
+    /**
+     * 기존 시뮬레이터를 재실행합니다.
+     *
+     * <p>
+     * 현재 로그인 사용자 기준으로 {@link EmitterContext}에 등록된 manager를 다시 실행합니다.
+     * 대상 UUID가 이미 제거되었거나 존재하지 않으면 내부 Context 상태에 따라 실질적인 재실행은 일어나지 않을 수 있습니다.
+     * </p>
+     *
+     * @param rq 재실행할 시뮬레이터 UUID 요청값
+     * @return 재실행 요청 대상 UUID
+     */
+    public Mono<String> restartEmitterSimulator(EmitterSimulatorRestartRQ rq) {
+        return SecurityHelper.securityHolder()
+            .map(user -> {
+                String username = user.getUsername();
+                return EmitterContext.restart(username, rq.getUuid());
+            });
     }
 
 }
