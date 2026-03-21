@@ -1,6 +1,6 @@
 # GeoBridge
 
-**실시간 위치(Geo) 시뮬레이션 데이터를 생성**하고, 대상 시스템으로 **MQTT/TCP/HTTP/WS** 프로토콜로 전송하는 **Spring WebFlux 기반 스트리밍 백엔드**입니다.
+**실시간 위치(Geo) 시뮬레이션 데이터를 생성**하고, 대상 시스템으로 **MQTT/TCP/HTTP/WS** 프로토콜로 전송하는 **Spring WebFlux 기반 스트리밍 백엔드**입니다.  
 본 프로젝트는 **"동시 연결 + 주기 스트림 + 프로토콜 브릿징" 문제를 Reactive 방식으로 해결**하는 데 초점을 맞췄습니다.
 
 ---
@@ -46,18 +46,78 @@
 
 ---
 
+## ⚡ 성능 검증 및 확장성 성과
+
+> RabbitMQ(Docker)를 동일 호스트에서 실행하고, 시뮬레이터 **1,000개를 동시 기동**한 환경에서 부하 테스트를 수행했습니다.
+
+---
+
+### 🧩 문제 상황
+
+GeoBridge는 다음과 같은 조건을 동시에 만족해야 했습니다.
+
+- 장기 연결 (SSE, MQTT 등)
+- 시뮬레이터별 주기적 메시지 생성 (1초 단위)
+- 다중 프로토콜로의 동시 전송
+
+기존 Thread-per-request 기반 구조에서는  
+동시 연결 수 증가 시 **스레드 점유 및 컨텍스트 스위칭 비용 증가로 인한 병목 발생 가능성**이 존재했습니다.
+
+---
+
+### ⚙️ 해결 전략
+
+- **Spring WebFlux 기반 Event Loop 모델 적용**
+- 시뮬레이터를 **경량 Reactive Stream(Flux)** 으로 설계
+- 각 연결이 **Thread를 점유하지 않도록 Non-blocking 구조 유지**
+- RabbitMQ를 활용하여 실제 메시징 환경과 유사한 조건에서 검증
+
+---
+
+### 📊 성능 측정 결과
+
+| 항목 | 결과 |
+|------|------|
+| 환경 | Apple MacBook M1 (로컬 단일 머신) |
+| 메시지 브로커 | RabbitMQ (Docker) |
+| 동시 시뮬레이터 수 | 1,000개 |
+| CPU 사용률 | **10% 미만** |
+| 힙 메모리 사용량 | **500MB 미만** (`-Xms2g -Xmx2g` 기준) |
+
+---
+
+### 🔍 결과 분석
+
+- 1,000개의 동시 시뮬레이터 환경에서도 **CPU 사용률이 낮게 유지되어 스레드 병목이 발생하지 않음을 확인**
+- 메모리 사용량이 안정적으로 유지되어 **대량 연결 환경에서도 예측 가능한 리소스 사용 패턴 확보**
+- Event Loop 기반 Non-blocking 구조를 선택한 설계가 **고동시성 환경에서도 안정적으로 동작함을 검증**
+
+---
+
+### 🚀 성과
+
+- **대규모 동시 연결 환경에서의 Non-blocking 아키텍처 효과 검증**
+- 시뮬레이터 수 증가 시에도 **선형 확장 가능한 구조 설계 및 확인**
+- GeoBridge가 **병목 지점이 되지 않도록 설계되었음을 실측 기반으로 검증**
+
+---
+
+> ⚠️ 로컬 환경에서의 비공식 테스트이며, 페이로드 크기 및 네트워크 조건에 따라 결과는 달라질 수 있습니다.
+
+---
+
 ## 🏗 아키텍처
 
 ```
 GeoBridge
- ├── Simulator (Flux.interval 기반 주기 실행)
- ├── Position Generator (좌표 + heading 계산)
- ├── Protocol Adapter
- │    ├── MQTT Adapter
- │    ├── TCP Adapter
- │    ├── HTTP Adapter
- │    └── WS Adapter
- └── SSE Sink Manager (사용자별 스트림 관리)
+├── Simulator (Flux.interval 기반 주기 실행)
+├── Position Generator (좌표 + heading 계산)
+├── Protocol Adapter
+│ ├── MQTT Adapter
+│ ├── TCP Adapter
+│ ├── HTTP Adapter
+│ └── WS Adapter
+└── SSE Sink Manager (사용자별 스트림 관리)
 ```
 
 ---
@@ -72,19 +132,6 @@ GeoBridge
 
 ---
 
-<!-- ## ⚡ 성능 및 부하 테스트
-
-| 항목              | 수치                   |
-| --------------- | -------------------- |
-| 동시 SSE 연결       | ~1,000+              |
-| 초당 이벤트 처리량      | ~10,000 events/sec   |
-| 평균 지연 (latency) | ~XX ms               |
-| 테스트 환경          | (예: 2vCPU / 4GB RAM) |
-
-> 실제 수치는 환경에 따라 달라질 수 있으며, 로컬 및 클라우드 환경에서 검증되었습니다.
-
---- -->
-
 ## 🔑 핵심 기능
 
 * **경로 기반 실시간 위치 생성** (위도/경도 + heading)
@@ -97,11 +144,8 @@ GeoBridge
 
 ## 🧪 Live Demo
 
-* **Web**: [http://geo-bridge.p-e.kr/](http://geo-bridge.p-e.kr/)
-* **API Base URL**: [http://geo-bridge.p-e.kr](http://geo-bridge.p-e.kr)
-
-※ 데모 서버는 비용 보호를 위해 **Outbound 전송 기능은 제한**되며,
-SSE 및 시뮬레이션 동작은 정상적으로 확인할 수 있습니다.
+* **Web**: http://geo-bridge.p-e.kr/
+* **API Base URL**: http://geo-bridge.p-e.kr
 
 ---
 
@@ -132,72 +176,3 @@ SSE 및 시뮬레이션 동작은 정상적으로 확인할 수 있습니다.
 
 * 프로토콜별 Adapter 분리
 * 확장성 및 유지보수성 확보
-
----
-
-## ▶️ 빠른 시작
-
-```bash
-./gradlew bootRun --args="--spring.profiles.active=local"
-```
-
----
-
-## 📡 대표 API
-
-### 1) 로그인 → JWT 발급
-
-```bash
-POST /api/v1/user/login
-```
-
-### 2) 시뮬레이터 시작
-
-```bash
-POST /api/v1/emitter/simulator
-```
-
-### 3) 시뮬레이터 종료
-
-```bash
-DELETE /api/v1/emitter/simulator?uuid=<uuid>
-```
-
-### 4) SSE 모니터링
-
-```bash
-GET /api/v1/emitter/client/monitoring/coords
-```
-
----
-
-## 🧩 프로젝트 구조
-
-* `api`: Controller / Service
-* `domain`: 시뮬레이션 및 프로토콜 처리
-* `global/security`: JWT 인증
-* `resources`: 설정 파일
-
----
-
-## 🧪 테스트
-
-```bash
-./gradlew test
-```
-
----
-
-## 📌 정리
-
-GeoBridge는 단순한 API 서버가 아니라,
-
-> **"실시간 스트림 처리 + 프로토콜 브릿징 + Reactive 시스템 설계"를 검증하기 위한 백엔드 프로젝트**입니다.
-
-특히,
-
-* 장기 연결 처리
-* Backpressure 제어
-* Multi-Protocol 확장 구조
-
-를 중심으로 설계되었습니다.
