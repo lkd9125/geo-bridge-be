@@ -68,6 +68,9 @@ dependencies {
 	// R2DBC MySQL Driver
 	runtimeOnly 'io.asyncer:r2dbc-mysql:1.1.1'
 
+	runtimeOnly 'com.h2database:h2'
+    runtimeOnly 'io.r2dbc:r2dbc-h2'
+
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 
