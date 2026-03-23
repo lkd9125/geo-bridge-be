@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table("USER")
+@Table("USERS")
 public class UserDTO implements Persistable<String>{
 
     @Id
