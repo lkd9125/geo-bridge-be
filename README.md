@@ -1,4 +1,5 @@
 # GeoBridge
+[![Desktop App](https://img.shields.io/badge/Download-Desktop_App-orange?logo=electron)](https://github.com/lkd9125/geo-bridge-desktop/releases/latest)
 
 **실시간 위치(Geo) 시뮬레이션 데이터를 생성**하고, 대상 시스템으로 **MQTT/TCP/HTTP/WS** 프로토콜로 전송하는 **Spring WebFlux 기반 스트리밍 백엔드**입니다.  
 본 프로젝트는 **"동시 연결 + 주기 스트림 + 프로토콜 브릿징" 문제를 Reactive 방식으로 해결**하는 데 초점을 맞췄습니다.
@@ -177,3 +178,7 @@ GeoBridge
 
 * 프로토콜별 Adapter 분리
 * 확장성 및 유지보수성 확보
+
+## 💻 Desktop Application
+본 Spring WebFlux 엔진을 탑재하여 GUI 환경에서 즉시 시뮬레이션을 수행할 수 있는 데스크톱 앱을 제공합니다.
+* **[GeoBridge Desktop 다운로드 (Windows/macOS)](https://github.com/lkd9125/geo-bridge-desktop/releases/latest)** *(내장 JRE 및 로컬 DB 포함으로 별도 설치 없이 즉시 실행 가능)*
