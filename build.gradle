@@ -26,8 +26,6 @@ repositories {
 }
 
 dependencies {
-	// Spring Web Engine
-	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'\
 	// Spring WebFlux
 	implementation ('org.springframework.boot:spring-boot-starter-webflux') {
 		exclude group: 'org.springframework.boot', module: 'spring-boot-starter-web'
