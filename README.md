@@ -146,6 +146,7 @@ GeoBridge
 
 * **Web**: http://geo-bridge.p-e.kr/
 * **API Base URL**: http://geo-bridge.p-e.kr
+* **Demo Account**: demo / demo
 
 ---
 
