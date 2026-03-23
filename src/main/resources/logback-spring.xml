@@ -10,6 +10,11 @@
 		<!-- 각자에 맞게 수정 -->
 		<!-- <property name="LOG_DIR" value="/Users/igyeongdo/WokrSpace/Project_File/Safety/log"/> -->
 	</springProfile>
+
+	<springProfile name="desktop">
+		<!-- 각자에 맞게 수정 -->
+		<!-- <property name="LOG_DIR" value="/Users/igyeongdo/WokrSpace/Project_File/Safety/log"/> -->
+	</springProfile>
 	
 	<springProfile name="dev">
 		<property name="LOG_DIR" value="/data/data/com.termux/files/home/geo_bridge_storage/log" />
@@ -62,6 +67,17 @@
         <logger name="jdbc.connection" level="OFF"/>
     </springProfile>
 
+	<!-- dev 환경에서 jdbc 로그 비활성화 -->
+    <springProfile name="desktop">
+        <logger name="jdbc" level="OFF"/>
+        <logger name="jdbc.sqlonly" level="OFF"/>
+        <logger name="jdbc.sqltiming" level="OFF"/>
+        <logger name="jdbc.audit" level="OFF"/>
+        <logger name="jdbc.resultset" level="OFF"/>
+        <logger name="jdbc.resultsettable" level="OFF"/>
+        <logger name="jdbc.connection" level="OFF"/>
+    </springProfile>
+
 	<springProfile name="dev">
 		<root level="INFO">
 			<appender-ref ref="STDOUT" />
@@ -70,6 +86,12 @@
 	</springProfile>
 
 	<springProfile name="local">
+		<root level="INFO">
+			<appender-ref ref="STDOUT" />
+		</root>
+	</springProfile>
+
+	<springProfile name="desktop">
 		<root level="INFO">
 			<appender-ref ref="STDOUT" />
 		</root>
