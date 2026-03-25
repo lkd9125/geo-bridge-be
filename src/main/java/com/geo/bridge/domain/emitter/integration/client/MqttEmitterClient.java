@@ -146,13 +146,13 @@ public class MqttEmitterClient implements EmitterClient{
 
     @Override
     public Mono<Void> send(String sendData) {
-        return Mono.<Void>fromRunnable(() -> {
+        Mono.<Void>fromRunnable(() -> {
                 try {
                     if(this.isConnected()){
                         mqttClient.publish(
                             topic,
                             sendData.getBytes(),
-                            1,
+                            0,
                             false
                         );
                     } else {
@@ -163,7 +163,10 @@ public class MqttEmitterClient implements EmitterClient{
                     throw new RuntimeException(e);
                 }
             })
-            .subscribeOn(IOScheduler.scheduler());
+            .subscribeOn(IOScheduler.scheduler())
+            .subscribe();
+
+        return Mono.empty();
     }
 
 }
