@@ -13,7 +13,7 @@
 
 	<springProfile name="desktop">
 		<!-- 각자에 맞게 수정 -->
-		<!-- <property name="LOG_DIR" value="/Users/igyeongdo/WokrSpace/Project_File/Safety/log"/> -->
+		<property name="LOG_DIR" value="${user.home}/geo_bridge_storage/log"/>
 	</springProfile>
 	
 	<springProfile name="dev">
@@ -31,7 +31,7 @@
 		</layout>
 	</appender>	
 
-	<springProfile name="local,dev">
+	<springProfile name="local,dev,desktop">
 		<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
 			<file>${LOG_PATH_NAME}</file>
 			<!-- 일자별로 로그파일 적용하기 -->
@@ -94,6 +94,7 @@
 	<springProfile name="desktop">
 		<root level="INFO">
 			<appender-ref ref="STDOUT" />
+			<appender-ref ref="FILE" />
 		</root>
 	</springProfile>
 
