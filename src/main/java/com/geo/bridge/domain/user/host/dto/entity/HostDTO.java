@@ -3,6 +3,7 @@ package com.geo.bridge.domain.user.host.dto.entity;
 import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.domain.Persistable;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -35,7 +36,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Table("HOST")
-public class HostDTO {
+public class HostDTO implements Persistable<Long> {
 
     @Id
     @Column("IDX")
@@ -70,4 +71,14 @@ public class HostDTO {
 
     @Column("UPDATE_AT")
     private String updateAt;
+
+    @Override
+    public Long getId() {
+        return idx;
+    }
+
+    @Override
+    public boolean isNew() {
+        return idx == null;
+    }
 }
