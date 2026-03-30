@@ -20,7 +20,6 @@ public class DesktopDatabaseConfig {
 
     @Bean
     public ConnectionFactoryInitializer initializer(ConnectionFactory connectionFactory) {
-        log.info("음하하");
         ConnectionFactoryInitializer initializer = new ConnectionFactoryInitializer();
         initializer.setConnectionFactory(connectionFactory);
         
