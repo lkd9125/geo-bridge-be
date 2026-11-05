@@ -3,7 +3,7 @@ package com.geo.bridge.api.emitter.simulator.model;
 import java.util.List;
 import java.util.Map;
 
-import com.geo.bridge.domain.emitter.integration.model.EmitterType;
+import com.geo.bridge.domain.simulator.integration.model.EmitterType;
 import com.geo.bridge.global.base.BasePointDTO;
 import com.geo.bridge.global.utils.SpeedUtils.SpeedUnit;
 

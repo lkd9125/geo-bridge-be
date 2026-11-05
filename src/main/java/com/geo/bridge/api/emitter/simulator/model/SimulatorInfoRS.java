@@ -1,6 +1,6 @@
 package com.geo.bridge.api.emitter.simulator.model;
 
-import com.geo.bridge.domain.emitter.context.model.EmitterClientStatus;
+import com.geo.bridge.domain.simulator.context.model.EmitterClientStatus;
 
 import lombok.Data;
 

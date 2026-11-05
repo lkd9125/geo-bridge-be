@@ -7,7 +7,7 @@ import org.springframework.data.domain.Persistable;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
-import com.geo.bridge.domain.emitter.integration.model.EmitterType;
+import com.geo.bridge.domain.simulator.integration.model.EmitterType;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

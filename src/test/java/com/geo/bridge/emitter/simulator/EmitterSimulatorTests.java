@@ -1,6 +1,5 @@
 package com.geo.bridge.emitter.simulator;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -13,19 +12,14 @@ import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationContext;
-import org.springframework.security.authentication.ReactiveAuthenticationManager;
-import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.geo.bridge.domain.emitter.SimulatorService;
-import com.geo.bridge.domain.emitter.integration.client.EmitterClient;
-import com.geo.bridge.domain.emitter.integration.model.EmitterType;
-import com.geo.bridge.domain.emitter.model.CreateSimulatorClientDTO;
+import com.geo.bridge.domain.simulator.SimulatorService;
+import com.geo.bridge.domain.simulator.integration.client.EmitterClient;
+import com.geo.bridge.domain.simulator.integration.model.EmitterType;
+import com.geo.bridge.domain.simulator.model.CreateSimulatorClientDTO;
 
-import io.github.sctf.annotation.TargetComponent;
-import io.github.sctf.annotation.TargetComponentTest;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 

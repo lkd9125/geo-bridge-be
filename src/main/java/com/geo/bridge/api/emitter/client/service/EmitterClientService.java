@@ -2,7 +2,7 @@ package com.geo.bridge.api.emitter.client.service;
 
 import org.springframework.stereotype.Service;
 
-import com.geo.bridge.domain.emitter.context.SseEmiterContext;
+import com.geo.bridge.domain.simulator.context.SseEmiterContext;
 import com.geo.bridge.global.security.SecurityHelper;
 
 import lombok.RequiredArgsConstructor;

@@ -2,7 +2,7 @@ package com.geo.bridge.api.user.host.model;
 
 import java.time.LocalDateTime;
 
-import com.geo.bridge.domain.emitter.integration.model.EmitterType;
+import com.geo.bridge.domain.simulator.integration.model.EmitterType;
 import com.geo.bridge.domain.user.host.dto.entity.Host;
 import com.geo.bridge.global.security.SecurityHelper;
 
