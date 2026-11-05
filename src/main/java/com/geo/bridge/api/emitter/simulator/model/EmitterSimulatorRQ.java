@@ -27,6 +27,7 @@ import lombok.Data;
  *     <li>{@link #speedUnit} : 속도 단위</li>
  *     <li>{@link #cycle} : 반복주기</li>
  *     <li>{@link #format} : 전송 포맷</li>
+ *     <li>{@link #historySaveYn} : 실행 이력 저장 여부</li>
  * </ul>
  */
 @Data
@@ -60,6 +61,8 @@ public class EmitterSimulatorRQ {
     private String format;
 
     private Map<String, String> parameter;
+
+    private Boolean historySaveYn = true;
 
     public void setSpeedUnit(String unit){
         this.speedUnit = SpeedUnit.fromUnit(unit);

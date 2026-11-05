@@ -11,11 +11,14 @@ import com.geo.bridge.api.emitter.simulator.model.EmitterSimulatorRQ;
 import com.geo.bridge.api.emitter.simulator.model.EmitterSimulatorRestartRQ;
 import com.geo.bridge.domain.simulator.SimulatorService;
 import com.geo.bridge.domain.simulator.context.EmitterContext;
+import com.geo.bridge.domain.simulator.history.HistoryService;
+import com.geo.bridge.domain.simulator.history.dto.entity.History;
 import com.geo.bridge.domain.simulator.integration.client.EmitterClient;
 import com.geo.bridge.domain.simulator.model.CreateSimulatorClientDTO;
 import com.geo.bridge.global.base.BasePointDTO;
 import com.geo.bridge.global.security.SecurityHelper;
 import com.geo.bridge.global.security.model.CustomUserDetails;
+import com.geo.bridge.global.utils.JsonUtils;
 import com.geo.bridge.global.utils.SpeedUtils;
 import com.geo.bridge.global.utils.SpeedUtils.SpeedUnit;
 
@@ -39,6 +42,7 @@ import reactor.util.function.Tuples;
 public class EmitterSimulatorService {
     
     private final SimulatorService simulatorService;
+    private final HistoryService historyService;
 
     /**
      * 시뮬레이션
@@ -82,7 +86,8 @@ public class EmitterSimulatorService {
                 Mono<EmitterClient> client = simulatorService.createSimulatorClient(dto);
                 Mono<List<BasePointDTO>> coordinates = simulatorService.createSimulatorCoordinates(routeCoordinates, emitterSimulatrRQ.getSpeed());
 
-                return Mono.zip(client, coordinates, Mono.just(emitterSimulatrRQ.getFormat()), Mono.just(emitterSimulatrRQ.getCycle()), SecurityHelper.securityHolder());
+                return saveHistory(emitterSimulatrRQ)
+                    .then(Mono.zip(client, coordinates, Mono.just(emitterSimulatrRQ.getFormat()), Mono.just(emitterSimulatrRQ.getCycle()), SecurityHelper.securityHolder()));
             })
             // 3. client context 등록 및 시작
             .map(tuple -> {
@@ -96,6 +101,41 @@ public class EmitterSimulatorService {
                 EmitterContext.excute(userDetails.getUsername(), uuid);
 
                 return uuid;
+            });
+    }
+
+    /**
+     * 실행 이력 저장 여부에 따라 시뮬레이터 설정을 저장합니다.
+     * - 저장 여부가 false이면 저장하지 않습니다.
+     * - 저장 여부가 true이면 로그인 사용자와 실행 설정을 이력으로 저장합니다.
+     *
+     * @param rq - 시뮬레이터 실행 요청
+     * @return 저장 완료 시그널
+     */
+    private Mono<Void> saveHistory(EmitterSimulatorRQ rq) {
+        if (!Boolean.TRUE.equals(rq.getHistorySaveYn())) {
+            return Mono.empty();
+        }
+
+        return SecurityHelper.securityHolder()
+            .flatMap(user -> {
+                History history = History.builder()
+                    .username(user.getUsername())
+                    .title(rq.getName())
+                    .path(JsonUtils.toJson(rq.getPointList()))
+                    .type(rq.getType().name())
+                    .host(rq.getHost())
+                    .topic(rq.getTopic())
+                    .hostId(rq.getHostId())
+                    .hostPassword(rq.getPassword())
+                    .speed(rq.getSpeed())
+                    .speedUnit(rq.getSpeedUnit().name())
+                    .cycle(rq.getCycle())
+                    .format(rq.getFormat())
+                    .parameter(JsonUtils.toJson(rq.getParameter()))
+                    .build();
+
+                return historyService.saveHistory(Mono.just(history));
             });
     }
 
