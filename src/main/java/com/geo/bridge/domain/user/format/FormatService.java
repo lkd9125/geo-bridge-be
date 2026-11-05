@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.geo.bridge.domain.user.format.dto.SearchFormatDTO;
-import com.geo.bridge.domain.user.format.dto.entity.FormatDTO;
+import com.geo.bridge.domain.user.format.dto.entity.Format;
 import com.geo.bridge.domain.user.format.repository.FormatRepository;
 import com.geo.bridge.global.base.BasePageRQ;
 import com.geo.bridge.global.base.BasePageRS;
@@ -39,7 +39,7 @@ public class FormatService {
      * @param mono 생성객체
      * @return
      */
-    public Mono<Void> createForamt(Mono<FormatDTO> mono){
+    public Mono<Void> createForamt(Mono<Format> mono){
         return mono
             .doOnNext(dto -> log.info(JsonUtils.toJson(dto)))
             .flatMap(formatRepository::save)
@@ -52,15 +52,15 @@ public class FormatService {
      * @param page 페이징
      * @return
      */
-    public Mono<BasePageRS<FormatDTO>> getAllFormat(SearchFormatDTO searchFormatDTO, BasePageRQ page){
+    public Mono<BasePageRS<Format>> getAllFormat(SearchFormatDTO searchFormatDTO, BasePageRQ page){
         Pageable pageable = PageRequest.of(page.getPage() - 1, page.getSize());
 
-        Mono<List<FormatDTO>> listMono = formatRepository.findBySearch(searchFormatDTO, pageable).collectList();
+        Mono<List<Format>> listMono = formatRepository.findBySearch(searchFormatDTO, pageable).collectList();
         Mono<Long> cntMono = formatRepository.countBySearch(searchFormatDTO);
         
         return Mono.zip(listMono, cntMono)
             .map(tuple -> {
-                List<FormatDTO> list = tuple.getT1();
+                List<Format> list = tuple.getT1();
                 Long cnt = tuple.getT2();
 
                 return BasePageRS.of(

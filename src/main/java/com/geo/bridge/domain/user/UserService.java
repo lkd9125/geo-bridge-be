@@ -2,7 +2,7 @@ package com.geo.bridge.domain.user;
 
 import org.springframework.stereotype.Service;
 
-import com.geo.bridge.domain.user.dto.entity.UserDTO;
+import com.geo.bridge.domain.user.dto.entity.User;
 import com.geo.bridge.domain.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -30,7 +30,7 @@ public class UserService {
      * @param userMono 유저 mono
      * @return
      */
-    public Mono<Void> createUser(Mono<UserDTO> userMono){
+    public Mono<Void> createUser(Mono<User> userMono){
         return userMono.flatMap(user -> userRepository.save(user))
             .then();
     }
@@ -40,7 +40,7 @@ public class UserService {
      * @param username 유저 아이디
      * @return
      */
-    public Mono<UserDTO> getUserByUsername(String username){
+    public Mono<User> getUserByUsername(String username){
         return userRepository.findById(username);
     }
 

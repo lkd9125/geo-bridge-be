@@ -8,7 +8,7 @@ import org.springframework.data.relational.core.query.Query;
 import org.springframework.stereotype.Repository;
 
 import com.geo.bridge.domain.user.format.dto.SearchFormatDTO;
-import com.geo.bridge.domain.user.format.dto.entity.FormatDTO;
+import com.geo.bridge.domain.user.format.dto.entity.Format;
 import com.geo.bridge.domain.user.format.repository.FormatBaseRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -26,11 +26,11 @@ public class FormatBaseRepositoryImpl implements FormatBaseRepository{
 
     
     @Override
-    public Flux<FormatDTO> findBySearch(SearchFormatDTO searchDTO, Pageable pageable) {
+    public Flux<Format> findBySearch(SearchFormatDTO searchDTO, Pageable pageable) {
         Criteria criteria = where(searchDTO);
         
         return template
-            .select(FormatDTO.class)
+            .select(Format.class)
             .from(this.TABLE)
             .matching(
                 Query.query(criteria)
@@ -47,7 +47,7 @@ public class FormatBaseRepositoryImpl implements FormatBaseRepository{
         Criteria criteria = where(searchDTO);
         
         return template
-            .count(Query.query(criteria), FormatDTO.class);
+            .count(Query.query(criteria), Format.class);
     }
 
     private Criteria where(SearchFormatDTO searchDTO){

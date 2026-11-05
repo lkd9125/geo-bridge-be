@@ -3,7 +3,7 @@ package com.geo.bridge.domain.user.format.repository;
 import org.springframework.data.domain.Pageable;
 
 import com.geo.bridge.domain.user.format.dto.SearchFormatDTO;
-import com.geo.bridge.domain.user.format.dto.entity.FormatDTO;
+import com.geo.bridge.domain.user.format.dto.entity.Format;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -16,7 +16,7 @@ public interface FormatBaseRepository{
      * @param pageable 페이지네이션
      * @return
      */
-    Flux<FormatDTO> findBySearch(SearchFormatDTO searchDTO, Pageable pageable);
+    Flux<Format> findBySearch(SearchFormatDTO searchDTO, Pageable pageable);
 
     /**
      * 검색조건에 맞춘 Format 데이터 총 개수 조회

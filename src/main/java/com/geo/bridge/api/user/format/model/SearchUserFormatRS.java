@@ -2,7 +2,7 @@ package com.geo.bridge.api.user.format.model;
 
 import java.time.LocalDateTime;
 
-import com.geo.bridge.domain.user.format.dto.entity.FormatDTO;
+import com.geo.bridge.domain.user.format.dto.entity.Format;
 
 import lombok.Data;
 
@@ -42,7 +42,7 @@ public class SearchUserFormatRS {
      * @param dto DB Emitter Client Table DTO
      * @return
      */
-    public static SearchUserFormatRS fromDTO(FormatDTO dto){
+    public static SearchUserFormatRS fromDTO(Format dto){
         SearchUserFormatRS rs = new SearchUserFormatRS();
         rs.setIdx(dto.getIdx());
         rs.setName(dto.getName());

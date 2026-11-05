@@ -1,8 +1,9 @@
-package com.geo.bridge.domain.user.format.dto.entity;
+package com.geo.bridge.domain.user.dto.entity;
 
 import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
@@ -16,21 +17,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table("FORMAT")
-public class FormatDTO implements Persistable<Long> {
+@Table("USERS")
+public class User implements Persistable<String>{
 
     @Id
-    @Column("IDX")
-    private Long idx;
+    @Column("USERNAME")
+    private String username;
 
-    @Column("NAME")
-    private String name;
-
-    @Column("FORMAT")
-    private String format;
-
-    @Column("CONTENT_TYPE")
-    private String contentType;
+    @Column("PASSWORD")
+    private String password;
 
     @Column("CREATE_DT")
     private LocalDateTime createDt;
@@ -44,13 +39,18 @@ public class FormatDTO implements Persistable<Long> {
     @Column("UPDATE_AT")
     private String updateAt;
 
+    @Transient
+    @Builder.Default
+    private boolean isNew = true;
+
     @Override
-    public Long getId() {
-        return idx;
+    public String getId() {
+        return this.username;
     }
 
     @Override
     public boolean isNew() {
-        return idx == null;
+        return this.isNew;
     }
+
 }

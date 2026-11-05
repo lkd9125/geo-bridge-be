@@ -8,7 +8,7 @@ import org.springframework.data.relational.core.query.Query;
 import org.springframework.stereotype.Repository;
 
 import com.geo.bridge.domain.user.host.dto.SearchHostDTO;
-import com.geo.bridge.domain.user.host.dto.entity.HostDTO;
+import com.geo.bridge.domain.user.host.dto.entity.Host;
 import com.geo.bridge.domain.user.host.repository.HostBaseRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -25,11 +25,11 @@ public class HostBaseRepositoryImpl implements HostBaseRepository{
     private final String TABLE = "HOST";
 
     @Override
-    public Flux<HostDTO> findBySearch(SearchHostDTO searchDTO, Pageable pageable) {
+    public Flux<Host> findBySearch(SearchHostDTO searchDTO, Pageable pageable) {
         Criteria criteria = where(searchDTO);
 
         return template
-            .select(HostDTO.class)
+            .select(Host.class)
             .from(this.TABLE)
             .matching(
                 Query.query(criteria)
@@ -45,7 +45,7 @@ public class HostBaseRepositoryImpl implements HostBaseRepository{
         Criteria criteria = where(searchDTO);
 
         return template
-            .count(Query.query(criteria), HostDTO.class);
+            .count(Query.query(criteria), Host.class);
     }
 
 

@@ -7,7 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.geo.bridge.domain.user.UserService;
-import com.geo.bridge.domain.user.dto.entity.UserDTO;
+import com.geo.bridge.domain.user.dto.entity.User;
 import com.geo.bridge.global.security.model.CustomUserDetails;
 
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,7 @@ public class AuthenticationWebLoginManager implements ReactiveAuthenticationMana
         return userService.getUserByUsername(username) // 1. DB에 username조회
             .switchIfEmpty(Mono.defer(() -> {
                 log.warn("USER NOT FOUND :: {}", username);
-                return Mono.<UserDTO>error(new BadCredentialsException("로그인 실패"));
+                return Mono.<User>error(new BadCredentialsException("로그인 실패"));
             }))
             .map(CustomUserDetails::fromDto) // 2. User Details로 변환
             .flatMap(userDetails -> {

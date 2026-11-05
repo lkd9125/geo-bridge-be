@@ -7,7 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.geo.bridge.domain.user.dto.entity.UserDTO;
+import com.geo.bridge.domain.user.dto.entity.User;
 
 import lombok.Data;
 
@@ -23,7 +23,7 @@ public class CustomUserDetails implements UserDetails{
         return Arrays.asList(new SimpleGrantedAuthority("BASIC"));
     }
 
-    public static UserDetails fromDto(UserDTO user){
+    public static UserDetails fromDto(User user){
         CustomUserDetails userDetails = new CustomUserDetails();
         userDetails.setUsername(user.getUsername());
         userDetails.setPassword(user.getPassword());

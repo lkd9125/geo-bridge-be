@@ -2,7 +2,7 @@ package com.geo.bridge.api.user.format.model;
 
 import java.time.LocalDateTime;
 
-import com.geo.bridge.domain.user.format.dto.entity.FormatDTO;
+import com.geo.bridge.domain.user.format.dto.entity.Format;
 import com.geo.bridge.global.security.SecurityHelper;
 
 import jakarta.validation.constraints.NotNull;
@@ -29,10 +29,10 @@ public class CreateFormatRQ {
 
     private String contentType;
 
-    public Mono<FormatDTO> toDto(){
+    public Mono<Format> toDto(){
         LocalDateTime now = LocalDateTime.now();
         return SecurityHelper.securityHolder()
-            .map(userDetails -> FormatDTO.builder()
+            .map(userDetails -> Format.builder()
                     .name(name)
                     .format(format)
                     .contentType(contentType)

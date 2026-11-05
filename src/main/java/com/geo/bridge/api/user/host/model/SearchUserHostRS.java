@@ -3,7 +3,7 @@ package com.geo.bridge.api.user.host.model;
 import java.time.LocalDateTime;
 
 import com.geo.bridge.domain.emitter.integration.model.EmitterType;
-import com.geo.bridge.domain.user.host.dto.entity.HostDTO;
+import com.geo.bridge.domain.user.host.dto.entity.Host;
 
 import lombok.Data;
 
@@ -26,7 +26,7 @@ import lombok.Data;
  * 
  * <p>기능</p>
  *  * <ul>
- *     <li>{@link #fromDTO(HostDTO)} : DTO를 SearchEmitterClientInfoRS로 변환</li>
+ *     <li>{@link #fromDTO(Host)} : DTO를 SearchEmitterClientInfoRS로 변환</li>
  * </ul>
  */
 @Data
@@ -59,7 +59,7 @@ public class SearchUserHostRS {
      * @param dto DB Emitter Client Table DTO
      * @return
      */
-    public static SearchUserHostRS fromDTO(HostDTO dto){
+    public static SearchUserHostRS fromDTO(Host dto){
         SearchUserHostRS rs = new SearchUserHostRS();
         rs.setIdx(dto.getIdx());
         rs.setName(dto.getName());

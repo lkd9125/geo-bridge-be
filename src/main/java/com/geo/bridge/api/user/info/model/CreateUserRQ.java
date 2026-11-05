@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.geo.bridge.domain.user.dto.entity.UserDTO;
+import com.geo.bridge.domain.user.dto.entity.User;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -18,9 +18,9 @@ public class CreateUserRQ {
     @NotNull
     private String password;
 
-    public UserDTO toDto(PasswordEncoder encoder){
+    public User toDto(PasswordEncoder encoder){
         LocalDateTime now = LocalDateTime.now();
-        return UserDTO.builder()
+        return User.builder()
             .username(username)
             .password(encoder.encode(password))
             .createAt(username)

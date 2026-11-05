@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.geo.bridge.domain.user.host.dto.SearchHostDTO;
-import com.geo.bridge.domain.user.host.dto.entity.HostDTO;
+import com.geo.bridge.domain.user.host.dto.entity.Host;
 import com.geo.bridge.domain.user.host.repository.HostRepository;
 import com.geo.bridge.global.base.BasePageRQ;
 import com.geo.bridge.global.base.BasePageRS;
@@ -40,7 +40,7 @@ public class HostService {
      * @param mono 생성객체
      * @return
      */
-    public Mono<Void> createClientHost(Mono<HostDTO> mono){
+    public Mono<Void> createClientHost(Mono<Host> mono){
         return mono
             .doOnNext(dto -> log.info(JsonUtils.toJson(dto)))
             .flatMap(hostRepository::save)
@@ -60,15 +60,15 @@ public class HostService {
      * @param page 페이지 정보(페이지/사이즈/범위)
      * @return 검색 결과 페이지
      */
-    public Mono<BasePageRS<HostDTO>> getAllClientHost(SearchHostDTO searchDTO, BasePageRQ page){
+    public Mono<BasePageRS<Host>> getAllClientHost(SearchHostDTO searchDTO, BasePageRQ page){
         Pageable pageable = PageRequest.of(page.getPage() - 1, page.getSize());
 
-        Mono<List<HostDTO>> listMono = hostRepository.findBySearch(searchDTO, pageable).collectList();
+        Mono<List<Host>> listMono = hostRepository.findBySearch(searchDTO, pageable).collectList();
         Mono<Long> cntMono = hostRepository.countBySearch(searchDTO);
 
         return Mono.zip(listMono, cntMono)
             .map(tuple -> {
-                List<HostDTO> list = tuple.getT1();
+                List<Host> list = tuple.getT1();
                 Long cnt = tuple.getT2();
 
                 return BasePageRS.of(

@@ -36,7 +36,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Table("HOST")
-public class HostDTO implements Persistable<Long> {
+public class Host implements Persistable<Long> {
 
     @Id
     @Column("IDX")
