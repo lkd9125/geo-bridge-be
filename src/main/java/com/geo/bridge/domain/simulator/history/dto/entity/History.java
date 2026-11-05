@@ -3,7 +3,6 @@ package com.geo.bridge.domain.simulator.history.dto.entity;
 import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
@@ -79,10 +78,6 @@ public class History implements Persistable<Long>{
     @Column("PARAMETER")
     private String parameter; // json (Map<String, String>)
 
-    @Transient
-    @Builder.Default
-    private boolean isNew = true;
-
     @Override
     public Long getId() {
         return sn;
@@ -90,7 +85,7 @@ public class History implements Persistable<Long>{
 
     @Override
     public boolean isNew() {
-        return this.isNew;
+        return sn == null;
     }
 
 }

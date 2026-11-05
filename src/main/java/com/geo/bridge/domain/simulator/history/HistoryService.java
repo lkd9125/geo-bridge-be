@@ -25,6 +25,7 @@ import reactor.core.publisher.Mono;
  * <ul>
  *     <li>{@link #saveHistory(Mono)} 실행 이력 저장</li>
  *     <li>{@link #getHistory(String, BasePageRQ)} 실행 이력 조회</li>
+ *     <li>{@link #toggleFavorite(Long, String)} 실행 이력 즐겨찾기 변경</li>
  *     <li>{@link #deleteHistory(Long)} 실행 이력 삭제</li>
  * </ul>
  */
@@ -83,6 +84,33 @@ public class HistoryService {
                 page.getRange(),
                 tuple.getT2().intValue()
             ));
+    }
+
+    /**
+     * 사용자 소유 실행 이력의 즐겨찾기 상태를 변경합니다.
+     * - 실행 이력 PK와 사용자 PK로 본인 이력 여부를 확인합니다.
+     * - 즐겨찾기 상태와 즐겨찾기 일시를 함께 변경합니다.
+     *
+     * @param sn - 실행 이력 PK
+     * @param username - 사용자 PK
+     * @return 변경된 즐겨찾기 상태
+     */
+    @Transactional
+    public Mono<Boolean> toggleFavorite(Long sn, String username) {
+        if (sn == null || username == null || username.isBlank()) {
+            return Mono.error(new BaseException(ExceptionCode.PARAMETER_INVALID));
+        }
+
+        return historyRepository.findBySnAndUsername(sn, username)
+            .switchIfEmpty(Mono.error(new BaseException(ExceptionCode.NOT_SERACH_DATA)))
+            .flatMap(history -> {
+                boolean favorite = !Boolean.TRUE.equals(history.getFavorite());
+                history.setFavorite(favorite);
+                history.setFavoriteDt(favorite ? LocalDateTime.now() : null);
+
+                return historyRepository.save(history);
+            })
+            .map(History::getFavorite);
     }
 
     /**

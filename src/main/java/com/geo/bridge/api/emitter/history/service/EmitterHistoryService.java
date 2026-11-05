@@ -20,6 +20,7 @@ import reactor.core.publisher.Mono;
  * <ul>
  *     <li>{@link #saveHistory(Mono)} 실행 이력 저장</li>
  *     <li>{@link #getHistory(BasePageRQ)} 실행 이력 조회</li>
+ *     <li>{@link #toggleFavorite(Long)} 실행 이력 즐겨찾기 변경</li>
  *     <li>{@link #deleteHistory(Long)} 실행 이력 삭제</li>
  * </ul>
  */
@@ -66,6 +67,19 @@ public class EmitterHistoryService {
                         pageRS.getTotalCount()
                     ))
             );
+    }
+
+    /**
+     * 로그인 사용자의 실행 이력 즐겨찾기 상태를 변경합니다.
+     * - 인증 정보에서 사용자 PK를 조회합니다.
+     * - 본인 소유 이력의 즐겨찾기 상태를 변경합니다.
+     *
+     * @param sn - 실행 이력 PK
+     * @return 변경된 즐겨찾기 상태
+     */
+    public Mono<Boolean> toggleFavorite(Long sn) {
+        return SecurityHelper.securityHolder()
+            .flatMap(user -> historyService.toggleFavorite(sn, user.getUsername()));
     }
 
     /**

@@ -2,6 +2,7 @@ package com.geo.bridge.api.emitter.history.controller;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +26,7 @@ import reactor.core.publisher.Mono;
  * <ul>
  *     <li>{@link #saveHistory(Mono)} 실행 이력 저장</li>
  *     <li>{@link #getHistory(BasePageRQ)} 실행 이력 조회</li>
+ *     <li>{@link #toggleFavorite(Long)} 실행 이력 즐겨찾기 변경</li>
  *     <li>{@link #deleteHistory(Long)} 실행 이력 삭제</li>
  * </ul>
  */
@@ -55,6 +57,17 @@ public class EmitterHistoryController {
     @GetMapping("/plist")
     public Mono<BasePageRS<SearchHistoryRS>> getHistory(@Valid BasePageRQ page) {
         return emitterHistoryService.getHistory(page);
+    }
+
+    /**
+     * 로그인 사용자의 실행 이력 즐겨찾기 상태를 변경합니다.
+     *
+     * @param sn - 실행 이력 PK
+     * @return 변경된 즐겨찾기 상태
+     */
+    @PatchMapping("/favorite")
+    public Mono<Boolean> toggleFavorite(@RequestParam("sn") Long sn) {
+        return emitterHistoryService.toggleFavorite(sn);
     }
 
     /**
