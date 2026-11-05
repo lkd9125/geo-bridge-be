@@ -26,7 +26,7 @@ import reactor.core.publisher.Mono;
  * <ul>
  *     <li>{@link #saveHistory(Mono)} 실행 이력 저장</li>
  *     <li>{@link #getHistory(BasePageRQ)} 실행 이력 조회</li>
- *     <li>{@link #toggleFavorite(Long)} 실행 이력 즐겨찾기 변경</li>
+ *     <li>{@link #toggleFavorite(Long, String)} 실행 이력 즐겨찾기 변경</li>
  *     <li>{@link #deleteHistory(Long)} 실행 이력 삭제</li>
  * </ul>
  */
@@ -63,11 +63,12 @@ public class EmitterHistoryController {
      * 로그인 사용자의 실행 이력 즐겨찾기 상태를 변경합니다.
      *
      * @param sn - 실행 이력 PK
+     * @param title - 변경할 실행 이력 제목
      * @return 변경된 즐겨찾기 상태
      */
     @PatchMapping("/favorite")
-    public Mono<Boolean> toggleFavorite(@RequestParam("sn") Long sn) {
-        return emitterHistoryService.toggleFavorite(sn);
+    public Mono<Boolean> toggleFavorite(@RequestParam("sn") Long sn, @RequestParam(value = "title", required = false) String title) {
+        return emitterHistoryService.toggleFavorite(sn, title);
     }
 
     /**
